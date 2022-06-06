@@ -10,7 +10,7 @@ import { useAppContext } from "../context/appContext";
 const Home: NextPage = () => {
   let { evil } = useAppContext();
   return (
-    <div data-theme={evil ? "dracula" : "cyberpunk"}>
+    <div data-theme={evil ? "dark" : "cyberpunk"}>
       <Header />
       {/* <Hero /> */}
       <div className="min-h-screen max-w-5xl mx-auto px-6">
