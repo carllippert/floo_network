@@ -1,13 +1,13 @@
 import React, { useState, createContext, useContext } from "react";
 
 export interface AppContext {
-  field: boolean;
-  setField: (value: true) => void;
+  evil: boolean;
+  setEvil: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContext>({
-  field: true,
-  setField: () => {},
+  evil: false,
+  setEvil: () => {},
 });
 
 export interface Props {
@@ -15,11 +15,11 @@ export interface Props {
 }
 
 export const AppContextProvider = (props: Props) => {
-  const [field, setField] = useState<AppContext["field"]>(true);
+  const [evil, setEvil] = useState<AppContext["evil"]>(true);
 
   const value = {
-    field,
-    setField,
+    evil,
+    setEvil,
   };
 
   return <AppContext.Provider value={value} {...props} />;
