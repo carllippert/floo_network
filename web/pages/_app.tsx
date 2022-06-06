@@ -14,7 +14,7 @@ import { APP_NAME } from "../utils/consts";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { chains, provider } = configureChains(
-    [chain.mainnet, chain.rinkeby],
+    [chain.localhost, chain.mainnet, chain.rinkeby],
     [alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }), publicProvider()]
   );
 
