@@ -11,12 +11,11 @@ error NonExistentTokenURI();
 error WithdrawTransfer();
 
 contract NFT is ERC721, Ownable {
-
     using Strings for uint256;
     string public baseURI;
     uint256 public currentTokenId;
     uint256 public constant TOTAL_SUPPLY = 10_000;
-    uint256 public constant MINT_PRICE = 0.08 ether;
+    uint256 public constant MINT_PRICE = 0.00 ether;
 
     constructor(
         string memory _name,
@@ -27,13 +26,9 @@ contract NFT is ERC721, Ownable {
     }
 
     function mintTo(address recipient) public payable returns (uint256) {
-        if (msg.value != MINT_PRICE) {
-            revert MintPriceNotPaid();
-        }
+        //TODO: do we actually mint to a users address?
+        //TODO: maybe we mint to the contract address? Or should these
         uint256 newTokenId = ++currentTokenId;
-        if (newTokenId > TOTAL_SUPPLY) {
-            revert MaxSupply();
-        }
         _safeMint(recipient, newTokenId);
         return newTokenId;
     }
