@@ -16,13 +16,19 @@ export const meta = {
         job_name: "build a rocket ship",
         description: "to mars and more",
         contact: "0x2BfC102290Bc92767B290B60fdfeCa120058ECD0", //flash gordon address
-        pay: {
-            value: "1000000000000000000",
-            module: "0x0000000000000000000000000000000000000000",
-        },
-        recruiter: {
-            value: "0.01",
-            module: "0x2BfC102290Bc92767B290B60fdfeCa120058ECD0", //maybe a way to change how incentive model works
+        incentives: {
+            actor: {
+                value: "1000000000000000000",
+                module: "0x0000000000000000000000000000000000000000",
+            },
+            recruiter: {
+                value: "0.01",
+                module: "0x2BfC102290Bc92767B290B60fdfeCa120058ECD0", //maybe a way to change how incentive model works
+            },
+            creator: {
+                value: "1000000000000000000",
+                module: "0x0000000000000000000000000000000000000000",
+            },
         },
         requirements: [{
             type: "or",
