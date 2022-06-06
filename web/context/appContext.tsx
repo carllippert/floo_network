@@ -6,7 +6,7 @@ export interface AppContext {
 }
 
 const AppContext = createContext<AppContext>({
-  evil: false,
+  evil: true,
   setEvil: () => {},
 });
 

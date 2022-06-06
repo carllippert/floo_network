@@ -9,11 +9,11 @@ const Header = () => {
         <input
           type="checkbox"
           onChange={(e) => {
-            setEvil(e.target.checked);
+            setEvil(!e.target.checked);
           }}
         />
-        <div className="swap-off">😇</div>
-        <div className="swap-on">😈</div>
+        <div className="swap-on">😇</div>
+        <div className="swap-off">😈</div>
       </label>
       <div className="flex-1" />
       <div className="m-2">
