@@ -12,18 +12,14 @@ error WithdrawTransfer();
 
 contract NFT is ERC721, Ownable {
     using Strings for uint256;
-    string public baseURI;
     uint256 public currentTokenId;
-    uint256 public constant TOTAL_SUPPLY = 10_000;
-    uint256 public constant MINT_PRICE = 0.00 ether;
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        string memory _baseURI
-    ) ERC721(_name, _symbol) {
-        baseURI = _baseURI;
-    }
+    // Custom URI for each / any token //
+    mapping(uint256 => string) private _tokenURIs;
+
+    constructor(string memory _name, string memory _symbol)
+        ERC721(_name, _symbol)
+    {}
 
     function mintTo(address recipient) public payable returns (uint256) {
         //TODO: do we actually mint to a users address?
@@ -33,6 +29,10 @@ contract NFT is ERC721, Ownable {
         return newTokenId;
     }
 
+
+    /**
+     * @dev See {IERC721Metadata-tokenURI}.
+     */
     function tokenURI(uint256 tokenId)
         public
         view
@@ -40,13 +40,32 @@ contract NFT is ERC721, Ownable {
         override
         returns (string memory)
     {
-        if (ownerOf(tokenId) == address(0)) {
-            revert NonExistentTokenURI();
-        }
-        return
-            bytes(baseURI).length > 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString()))
-                : "";
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI query for nonexistent token"
+        );
+
+        string memory _tokenURI = _tokenURIs[tokenId];
+
+        return _tokenURI;
+    }
+
+    /**
+     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI)
+        internal
+        virtual
+    {
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI set of nonexistent token"
+        );
+        _tokenURIs[tokenId] = _tokenURI;
     }
 
     function withdrawPayments(address payable payee) external onlyOwner {
@@ -55,5 +74,17 @@ contract NFT is ERC721, Ownable {
         if (!transferTx) {
             revert WithdrawTransfer();
         }
+    }
+
+    /**
+     * @dev Returns whether `tokenId` exists.
+     *
+     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
+     *
+     * Tokens start existing when they are minted (`_mint`),
+     * and stop existing when they are burned (`_burn`).
+     */
+    function _exists(uint256 tokenId) internal view virtual returns (bool) {
+        return _ownerOf[tokenId] != address(0);
     }
 }
