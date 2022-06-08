@@ -14,21 +14,22 @@ contract NFT is ERC721, Ownable {
     using Strings for uint256;
     uint256 public currentTokenId;
 
-    // Custom URI for each / any token //
+    // Custom URI for each token
     mapping(uint256 => string) private _tokenURIs;
 
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {}
 
-    function mintTo(address recipient) public payable returns (uint256) {
+    function mintTo(address recipient, string tokenURI) public payable returns (uint256) {
         //TODO: do we actually mint to a users address?
         //TODO: maybe we mint to the contract address? Or should these
+        //TODO: how do we provide correct amount of funds, and check that they are accurate?
         uint256 newTokenId = ++currentTokenId;
         _safeMint(recipient, newTokenId);
+        _setTokenURI(tokenId, tokenURI);   
         return newTokenId;
     }
-
 
     /**
      * @dev See {IERC721Metadata-tokenURI}.

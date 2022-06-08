@@ -1,13 +1,14 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAppContext } from "../context/appContext";
-import { useBlockNumber } from 'wagmi'
+import { useBlockNumber } from "wagmi";
+import Link from "next/link";
 
 const Header = () => {
   const { setEvil } = useAppContext();
 
   const blockNumber = useBlockNumber({
     watch: true,
-  })
+  });
 
   return (
     <div className="navbar bg-base-100">
@@ -33,7 +34,9 @@ const Header = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <a>Mint Opportunity</a>
+              <Link href="/mint">
+                <a>Mint</a>
+              </Link>
             </li>
             <li>
               <a>My Opportunities</a>
@@ -64,7 +67,6 @@ const Header = () => {
         <ConnectButton />
       </div>
     </div>
-
   );
 };
 
