@@ -9,7 +9,7 @@ import {
 
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import Layout from "../components/layout";
-
+import JobCard from "../components/jobcard";
 const contract_address = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 const chain = 31337;
 const metadata_url =
@@ -60,7 +60,13 @@ const Mint = () => {
       <button onClick={mint} className="btn btn-primary">
         Mint!
       </button>
-      {contractRead ? JSON.stringify(contractRead, null, 3) : "no read well"}
+      <div className="pt-20">
+        {contractRead ? (
+          <JobCard data={contractRead.data} error={contract.error} />
+        ) : (
+          "no read well"
+        )}
+      </div>
     </Layout>
   );
 };
