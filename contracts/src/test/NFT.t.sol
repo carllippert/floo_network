@@ -18,17 +18,16 @@ contract NFTTest is DSTest {
         nft = new NFT("NFT_tutorial", "Loop");
     }
 
-
     function testMintPricePaid() public {
-        nft.mintTo{value: 0.08 ether}(address(1));
+        nft.mintTo(address(1), "https://example.com/token/1");
     }
 
     function testFailMintToZeroAddress() public {
-        nft.mintTo{value: 0.08 ether}(address(0));
+        nft.mintTo(address(0), "https://example.com/token/1");
     }
 
     function testNewMintOwnerRegistered() public {
-        nft.mintTo{value: 0.08 ether}(address(1));
+        nft.mintTo(address(1), "https://example.com/token/1");
         uint256 slotOfNewOwner = stdstore
             .target(address(nft))
             .sig(nft.ownerOf.selector)
@@ -44,7 +43,7 @@ contract NFTTest is DSTest {
     }
 
     function testBalanceIncremented() public {
-        nft.mintTo{value: 0.08 ether}(address(1));
+        nft.mintTo(address(1), "https://example.com/token/1");
         uint256 slotBalance = stdstore
             .target(address(nft))
             .sig(nft.balanceOf.selector)
@@ -56,7 +55,7 @@ contract NFTTest is DSTest {
         );
         assertEq(balanceFirstMint, 1);
 
-        nft.mintTo{value: 0.08 ether}(address(1));
+        nft.mintTo(address(1), "https://example.com/token/1");
         uint256 balanceSecondMint = uint256(
             vm.load(address(nft), bytes32(slotBalance))
         );
@@ -65,7 +64,7 @@ contract NFTTest is DSTest {
 
     function testSafeContractReceiver() public {
         Receiver receiver = new Receiver();
-        nft.mintTo{value: 0.08 ether}(address(receiver));
+        nft.mintTo(address(receiver), "https://example.com/token/1");
         uint256 slotBalance = stdstore
             .target(address(nft))
             .sig(nft.balanceOf.selector)
@@ -78,7 +77,7 @@ contract NFTTest is DSTest {
 
     function testFailUnSafeContractReceiver() public {
         vm.etch(address(1), bytes("mock code"));
-        nft.mintTo{value: 0.08 ether}(address(1));
+        nft.mintTo(address(1), "https://example.com/token/1");
     }
 }
 

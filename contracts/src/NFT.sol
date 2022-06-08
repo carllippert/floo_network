@@ -21,13 +21,17 @@ contract NFT is ERC721, Ownable {
         ERC721(_name, _symbol)
     {}
 
-    function mintTo(address recipient, string tokenURI) public payable returns (uint256) {
+    function mintTo(address recipient, string calldata newTokenURI)
+        public
+        payable
+        returns (uint256)
+    {
         //TODO: do we actually mint to a users address?
         //TODO: maybe we mint to the contract address? Or should these
         //TODO: how do we provide correct amount of funds, and check that they are accurate?
         uint256 newTokenId = ++currentTokenId;
         _safeMint(recipient, newTokenId);
-        _setTokenURI(tokenId, tokenURI);   
+        _setTokenURI(newTokenId, newTokenURI);
         return newTokenId;
     }
 

@@ -7,8 +7,8 @@ export const meta = {
   name: "ambition",
   background_color: "",
   attributes: [
-    { trait_type: "Skin Tone", value: "Midnight" },
-    { trait_type: "Body Shape", value: "Chiseled" },
+    { trait_type: "Language", value: "English" },
+    { trait_type: "Origin", value: "Chaos" },
     { display_type: "number", trait_type: "Will", value: 5, max_value: 9 },
   ],
     opportunity: { //optimistic naming system for work?
