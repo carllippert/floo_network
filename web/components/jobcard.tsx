@@ -25,13 +25,13 @@ const JobCard = ({ data, error }: { data: Result | undefined; error: any }) => {
   }, [data]);
 
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card w-96 bg-base-300 shadow-xl">
       {metadata ? (
         <figure>
           <img src={metadata?.image} alt="Work" />
         </figure>
       ) : null}
-{/* 
+      {/* 
       {JSON.stringify(data, null, 3)}
       <br />
       {JSON.stringify(metadata, null, 3)} */}
