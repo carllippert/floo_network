@@ -51,6 +51,7 @@ const Header = () => {
         </div>
         <label className="swap swap-flip text-3xl">
           <input
+            className="hidden"
             type="checkbox"
             onChange={(e) => {
               setEvil(!e.target.checked);

@@ -12,7 +12,6 @@ const JobCard = ({ data, error }: { data: Result | undefined; error: any }) => {
       let json = await res.json();
 
       setMetadata(json);
-      console.log(json);
     } catch (error) {
       console.log(error);
     } finally {
@@ -31,10 +30,6 @@ const JobCard = ({ data, error }: { data: Result | undefined; error: any }) => {
           <img src={metadata?.image} alt="Work" />
         </figure>
       ) : null}
-      {/* 
-      {JSON.stringify(data, null, 3)}
-      <br />
-      {JSON.stringify(metadata, null, 3)} */}
 
       <div className="card-body">
         <h2 className="card-title">

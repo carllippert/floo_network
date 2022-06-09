@@ -30,6 +30,7 @@ contract NFT is ERC721, Ownable {
         //may also be not regularly used. Platforms could say "pay for enterprise with USD" and they just cover txn costs and
         //don't include a "creator fee" on the mint transactions they facilitate
         uint256 creatorFee;
+        //maybe change name to minter? more explicity? the entity that *mints* the NFT
         //for the dao, guild, marketplace, human, contract etc that helps find the person who does the "work"
         //this will often be kept 0 because no payment may be included since this is just part of a salaried job
         //inspired by recruiter fee naming for zora asks
