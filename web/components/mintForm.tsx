@@ -1,9 +1,13 @@
-import { FormEvent, useState } from "react";
-import { useContract, useSigner, useAccount, useBlockNumber } from "wagmi";
+import { FormEvent, useEffect, useState } from "react";
+import {
+  useContract,
+  useSigner,
+  useAccount,
+  useBlockNumber,
+  useContractWrite,
+} from "wagmi";
 import { contract_address, metadata_url } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
-
-import ethers from "ethers";
 
 type FormInput = {
   metadata: string;
@@ -20,6 +24,8 @@ const MintForm = () => {
     recruiter: 1000,
   });
   let [loading, setLoading] = useState(false);
+  let [args, setArgs] = useState<any[]>([]);
+  let [value, setValue] = useState(0);
 
   const blockNumber = useBlockNumber({
     watch: true,
@@ -28,34 +34,56 @@ const MintForm = () => {
   const { data: signer } = useSigner();
   const { data: account } = useAccount();
 
-  const contract = useContract({
-    addressOrName: contract_address,
-    contractInterface: MLS_NFT_CONTRACT.abi,
-    signerOrProvider: signer,
-  });
+  // const contract = useContract({
+  //   addressOrName: contract_address,
+  //   contractInterface: MLS_NFT_CONTRACT.abi,
+  //   signerOrProvider: signer,
+  // });
+
+  const { data, isError, isLoading, write } = useContractWrite(
+    {
+      addressOrName: contract_address,
+      contractInterface: MLS_NFT_CONTRACT.abi,
+      signerOrProvider: signer,
+    },
+    "mintTo",
+    {
+      args,
+      overrides: { value },
+      onSettled(data, error) {
+        console.log("Settled", { data, error });
+      },
+    }
+  );
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       setLoading(true);
 
-      if (form.executer && form.creator && form.metadata && form.recruiter && blockNumber.data) {
+      if (
+        form.executer &&
+        form.creator &&
+        form.metadata &&
+        form.recruiter &&
+        blockNumber.data
+      ) {
         //MINT!
         console.log(form);
         if (signer && account) {
+          let deadline = blockNumber.data + 100;
 
-          let deadline = blockNumber.data + 100; 
-
-          let res = await contract.mintTo(
+          setArgs([
             account.address,
             form.metadata,
             form.executer,
             form.recruiter,
-            form.creator, 
-            deadline
-          );
-          
-          console.log(res);
+            form.creator,
+            deadline,
+          ]);
+
+          setValue(form.executer + form.recruiter + form.creator);
+          await write();
         }
       } else {
         alert("Please fill in all fields");
