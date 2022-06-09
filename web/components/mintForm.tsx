@@ -1,11 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import {
-  useContract,
-  useSigner,
-  useAccount,
-  useBlockNumber,
-  useContractWrite,
-} from "wagmi";
+import { useSigner, useAccount, useBlockNumber, useContractWrite } from "wagmi";
 import { contract_address, metadata_url } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 
@@ -24,8 +18,6 @@ const MintForm = () => {
     recruiter: 1000,
   });
   let [loading, setLoading] = useState(false);
-  let [args, setArgs] = useState<any[]>([]);
-  let [value, setValue] = useState(0);
 
   const blockNumber = useBlockNumber({
     watch: true,
@@ -33,12 +25,6 @@ const MintForm = () => {
 
   const { data: signer } = useSigner();
   const { data: account } = useAccount();
-
-  // const contract = useContract({
-  //   addressOrName: contract_address,
-  //   contractInterface: MLS_NFT_CONTRACT.abi,
-  //   signerOrProvider: signer,
-  // });
 
   const { data, isError, isLoading, write } = useContractWrite(
     {
@@ -48,8 +34,6 @@ const MintForm = () => {
     },
     "mintTo",
     {
-      args,
-      overrides: { value },
       onSettled(data, error) {
         console.log("Settled", { data, error });
       },
@@ -73,17 +57,19 @@ const MintForm = () => {
         if (signer && account) {
           let deadline = blockNumber.data + 100;
 
-          setArgs([
-            account.address,
-            form.metadata,
-            form.executer,
-            form.recruiter,
-            form.creator,
-            deadline,
-          ]);
+          let totalValue = form.executer + form.creator + form.recruiter;
 
-          setValue(form.executer + form.recruiter + form.creator);
-          await write();
+          await write({
+            args: [
+              account.address,
+              form.metadata,
+              form.executer,
+              form.recruiter,
+              form.creator,
+              deadline,
+            ],
+            overrides: { value: totalValue },
+          });
         }
       } else {
         alert("Please fill in all fields");
