@@ -37,7 +37,7 @@ const Jobs: NextPage = () => {
 
       let fakeJobs: FakeJob[] = [];
       for (let i = 0; i < jobsCount; i++) {
-        fakeJobs.push({ tokenID: String(i) });
+        fakeJobs.push({ tokenID: String(i + 1) });
       }
       setFakeJobs(fakeJobs);
     }
@@ -45,9 +45,9 @@ const Jobs: NextPage = () => {
 
   return (
     <Layout>
-      {jobsCount}
+      {/* {jobsCount} */}
       {data ? (
-        <div className="w-full">
+        <div className="w-full flex">
           {fakeJobs.map((job, index) => {
             return <JobCard key={job.tokenID} tokenID={job.tokenID} />;
           })}

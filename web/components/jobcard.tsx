@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Result } from "ethers/lib/utils";
 import { useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
@@ -15,9 +14,9 @@ type Job = {
 };
 
 const JobCard = ({ tokenID }: { tokenID: string }) => {
-  //{ data, error }: { data: Result | undefined; error: any }
   let [metadata, setMetadata] = useState(null);
   let [loading, setLoading] = useState(false);
+
   let [job, setJob] = useState<Job | null>(null);
 
   const { data } = useContractRead(
@@ -34,6 +33,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   const fetchMeta = async () => {
     try {
       setLoading(true);
+      console.log("TokenURI -> " + job?.tokenURI);
       let res = await fetch(String(job?.tokenURI));
       let json = await res.json();
 
@@ -46,8 +46,14 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   };
 
   useEffect(() => {
-    console.log("Data in Job Card -> " + JSON.stringify(data));
-    if (data) {
+    if (job) {
+      fetchMeta();
+    }
+  }, [job]);
+
+  useEffect(() => {
+    // console.log("Data in Job Card -> " + tokenID + " " + JSON.stringify(data));
+    if (data && !job) {
       //take array make into struct and set in state.
       let job: Job = {
         recipient: data[0],
@@ -59,30 +65,32 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
       };
 
       setJob(job);
-
-      fetchMeta();
+      console.log("Job ?=> " + tokenID + " " + JSON.stringify(job, null, 3));
     }
   }, [data]);
 
   return (
-    <div className="card w-96 bg-base-300 shadow-xl">
+    <div className="card w-96 bg-base-300 shadow-xl m-6">
       {metadata ? (
-        <figure>
-          <img src={metadata?.image} alt="Work" />
-        </figure>
-      ) : null}
-
-      <div className="card-body">
-        <h2 className="card-title">
-          Yeah buddy
-          <div className="badge badge-secondary">NEW</div>
-        </h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
-        <div className="card-actions justify-end">
-          <div className="badge badge-outline">Fashion</div>
-          <div className="badge badge-outline">Products</div>
-        </div>
-      </div>
+        <>
+          <figure>
+            <img src={metadata.image} alt="Work" />
+          </figure>
+          <div className="card-body">
+            <h2 className="card-title">
+              Yeah buddy
+              <div className="badge badge-secondary">NEW</div>
+            </h2>
+            <p>If a dog chews shoes whose shoes does he choose?</p>
+            <div className="card-actions justify-end">
+              <div className="badge badge-outline">Fashion</div>
+              <div className="badge badge-outline">Products</div>
+            </div>
+          </div>
+        </>
+      ) : (
+        "No Metadata"
+      )}
     </div>
   );
 };
