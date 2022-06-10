@@ -63,7 +63,8 @@ const MintForm = () => {
 
           await write({
             args: [
-              account.address,
+              account.address, //creator
+              account.address, //receiver
               form.metadata,
               form.executer,
               form.recruiter,

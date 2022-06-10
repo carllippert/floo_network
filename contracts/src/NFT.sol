@@ -71,13 +71,26 @@ contract NFT is ERC721, Ownable {
     mapping(uint256 => Job) private _jobs;
 
     //claimable balances
+    //from a entity creating a job. the balances start here
+    //creator balance is claimable right away
+    //recruiter is claimable after completion
+    //executer is claimable after completion
     mapping(address => uint256) private _claimableBalances;
+
+    //locked balances
+    //once a job is claimed, the balances are locked here
+    mapping(address => uint256) private _lockedBlances; 
+
+    //reclaimable balances ( balances from burnable tokens )
+    mapping(address => uint256) private _reclaimableBalances;
+
 
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {}
 
     function mintTo(
+        address _creator, 
         address _recipient,
         string memory _tokenURI,
         uint256 _executerFee,
@@ -91,17 +104,20 @@ contract NFT is ERC721, Ownable {
         //and incentives initiated
         require(_totalFee == msg.value, "incorrect funds sent");
 
-        //TODO: do we actually mint to a users address?
-        //TODO: maybe we mint to the contract address? Or should these
-        //TODO: how do we provide correct amount of funds, and check that they are accurate?
         uint256 _tokenId = ++currentTokenId;
         _safeMint(_recipient, _tokenId);
         _setTokenURI(_tokenId, _tokenURI);
 
-        //TODO: require that "payable" is sufficient to cover *exactly*
-        //executer fee +
-        //recruiter fee +
-        //creator fee
+
+        //set claimable for creator
+        //creator just gets paid right away in current thinking
+        _claimableBalances[_creator] = _creatorFee;
+
+        //set reclaimable for executer && recruiter ( both unknown at this point )
+        //so the person who sent the money the base user, can claim this back if 
+        //no one does the work or if they are fishing etc
+        _reclaimableBalances[_recipient] = _executerFee + _recruiterFee;
+        
 
         _jobs[_tokenId] = Job({
             recipient: _recipient,
