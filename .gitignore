@@ -1,3 +1,4 @@
 .env
 out/
 cache/
+/node_modules

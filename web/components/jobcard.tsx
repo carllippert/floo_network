@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 type Job = {
   recipient: string;
@@ -14,7 +14,7 @@ type Job = {
 };
 
 const JobCard = ({ tokenID }: { tokenID: string }) => {
-  let [metadata, setMetadata] = useState(null);
+  let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
 
   let [job, setJob] = useState<Job | null>(null);
@@ -70,7 +70,9 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   }, [data]);
 
   return (
-    <div className="card w-96 bg-base-300 shadow-xl m-6">
+    <li
+      className="card col-span-1 flex flex-col  bg-base-300 rounded-lg shadow-xl"
+    >
       {metadata ? (
         <>
           <figure>
@@ -78,20 +80,40 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
           </figure>
           <div className="card-body">
             <h2 className="card-title">
-              Yeah buddy
-              <div className="badge badge-secondary">NEW</div>
+              {metadata?.description}
+              {/* <div className="badge badge-secondary">NEW</div> */}
             </h2>
-            <p>If a dog chews shoes whose shoes does he choose?</p>
-            <div className="card-actions justify-end">
-              <div className="badge badge-outline">Fashion</div>
-              <div className="badge badge-outline">Products</div>
+            {/* <p>If a dog chews shoes whose shoes does he choose?</p> */}
+            <div className="card-actions">
+              <div>
+                <div>Pays</div>
+
+                <div className="badge badge-outline">
+                  {" "}
+                  {ethers.utils.formatEther(job?.executorFee)}
+                </div>
+              </div>
+              <div>
+                <div> Creator App Reward</div>
+                <div className="badge badge-outline">
+                  {" "}
+                  {ethers.utils.formatEther(job?.creatorFee)}
+                </div>
+              </div>
+              <div>
+                <div>Recruiter App Reward</div>
+                <div className="badge badge-outline">
+                  {" "}
+                  {ethers.utils.formatEther(job?.recruiterFee)}
+                </div>
+              </div>
             </div>
           </div>
         </>
       ) : (
         "No Metadata"
       )}
-    </div>
+    </li>
   );
 };
 

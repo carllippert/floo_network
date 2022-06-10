@@ -47,11 +47,14 @@ const Jobs: NextPage = () => {
     <Layout>
       {/* {jobsCount} */}
       {data ? (
-        <div className="w-full flex">
+        <ul
+          role="list"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 mt-6"
+        >
           {fakeJobs.map((job, index) => {
             return <JobCard key={job.tokenID} tokenID={job.tokenID} />;
           })}
-        </div>
+        </ul>
       ) : (
         "No Jobs"
       )}
