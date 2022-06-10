@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useSigner, useAccount, useBlockNumber, useContractWrite } from "wagmi";
 import { contract_address, metadata_url } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
@@ -13,10 +13,11 @@ type FormInput = {
 const MintForm = () => {
   let [form, setForm] = useState<FormInput>({
     metadata: metadata_url,
-    executer: 1000,
-    creator: 1000,
-    recruiter: 1000,
+    executer: 10000,
+    creator: 100000,
+    recruiter: 100000,
   });
+
   let [loading, setLoading] = useState(false);
 
   const blockNumber = useBlockNumber({
@@ -46,14 +47,14 @@ const MintForm = () => {
       setLoading(true);
 
       if (
-        form.executer &&
-        form.creator &&
+        form.executer >= 0 &&
+        form.creator >= 0 &&
         form.metadata &&
-        form.recruiter &&
+        form.recruiter >= 0 &&
         blockNumber.data
       ) {
         //MINT!
-        console.log(form);
+        console.log("Minting");
         if (signer && account) {
           let deadline = blockNumber.data + 100;
 
@@ -68,7 +69,7 @@ const MintForm = () => {
               form.creator,
               deadline,
             ],
-            overrides: { value: totalValue },
+            overrides: { value: totalValue, gasLimit: 100000 },
           });
         }
       } else {

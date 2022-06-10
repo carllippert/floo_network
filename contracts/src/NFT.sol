@@ -53,6 +53,8 @@ contract NFT is ERC721, Ownable {
         //relations or requirements module?
         //like create a place where another contract can be called or is "known" to be indexed to create infoormation
         //for this future?
+        //TODO: remove after dev
+        string tokenURI;
     }
 
     //TODO: need to override _burn so that appropriate users receive funds
@@ -106,7 +108,8 @@ contract NFT is ERC721, Ownable {
             executerFee: _executerFee,
             creatorFee: _creatorFee,
             recruiterFee: _recruiterFee,
-            deadline: _deadline
+            deadline: _deadline,
+            tokenURI: _tokenURI
         });
 
         emit JobCreated(_tokenId, _jobs[_tokenId]);
@@ -158,6 +161,22 @@ contract NFT is ERC721, Ownable {
         if (!transferTx) {
             revert WithdrawTransfer();
         }
+    }
+
+    // TODO: remove just for dev really.
+    function getCurrentTokenId() public view virtual returns (uint256) {
+        return currentTokenId;
+    }
+
+    function getJob(uint256 tokenId) public view virtual returns (Job memory) {
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI query for nonexistent token"
+        );
+
+        Job memory _job = _jobs[tokenId];
+
+        return _job;
     }
 
     /**
