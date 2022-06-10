@@ -39,13 +39,7 @@ const Mint = () => {
           <MintForm />
         </div>
 
-        <div className="w-full">
-          {contractRead ? (
-            <JobCard data={contractRead.data} error={contractRead.error} />
-          ) : (
-            "no read well"
-          )}
-        </div>
+        <div className="w-full">YOLO</div>
       </div>
     </Layout>
   );

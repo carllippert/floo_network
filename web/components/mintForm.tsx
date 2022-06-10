@@ -54,8 +54,9 @@ const MintForm = () => {
         blockNumber.data
       ) {
         //MINT!
-        console.log("Minting");
+     
         if (signer && account) {
+          console.log("Minting");
           let deadline = blockNumber.data + 100;
 
           let totalValue = form.executer + form.creator + form.recruiter;
@@ -69,7 +70,7 @@ const MintForm = () => {
               form.creator,
               deadline,
             ],
-            overrides: { value: totalValue, gasLimit: 100000 },
+            overrides: { value: totalValue, gasLimit: 10000000 },
           });
         }
       } else {

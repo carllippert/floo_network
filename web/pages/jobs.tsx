@@ -1,30 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useContractRead } from "wagmi";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import Layout from "../components/layout";
 import JobCard from "../components/jobcard";
 import { contract_address } from "../utils/consts";
+import { BigNumber, ethers } from "ethers";
 
+type FakeJob = {
+  tokenID: string;
+};
 const Jobs: NextPage = () => {
-  const contractRead = useContractRead(
+  let [jobsCount, setJobsCount] = useState(0);
+  let [fakeJobs, setFakeJobs] = useState<FakeJob[]>([]);
+
+  const { data } = useContractRead(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
     },
-    "tokenURI",
-    {
-      args: "1",
-    }
+    "getCurrentTokenId"
   );
+
+  useEffect(() => {
+    console.log("contractRead", JSON.stringify(data));
+    if (data) {
+      let number = BigNumber.from(data);
+
+      console.log("number", number);
+
+      let parsed = parseInt(number._hex);
+
+      console.log("parsed", parsed);
+
+      setJobsCount(parsed);
+
+      let fakeJobs: FakeJob[] = [];
+      for (let i = 0; i < jobsCount; i++) {
+        fakeJobs.push({ tokenID: String(i) });
+      }
+      setFakeJobs(fakeJobs);
+    }
+  }, [data]);
 
   return (
     <Layout>
-        {contractRead ? (
-            <JobCard data={contractRead.data} error={contractRead.error} />
-          ) : (
-            "no read well"
-          )}
+      {jobsCount}
+      {data ? (
+        <div className="w-full">
+          {fakeJobs.map((job, index) => {
+            return <JobCard key={job.tokenID} tokenID={job.tokenID} />;
+          })}
+        </div>
+      ) : (
+        "No Jobs"
+      )}
     </Layout>
   );
 };
