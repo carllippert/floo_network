@@ -201,6 +201,8 @@ contract NFT is ERC721, Ownable {
 
     //should maybe the recruiter be able to request to claim part of executer fee
     //vs the creator needing to explicitly set and correctly price a recruiter fee?
+    //TODO: a shit load of complicated stuff related to aggregate identities goldlists, disallow lists
+    //etc
     function claimJob(
         uint256 tokenId,
         address recruiter,
@@ -265,6 +267,63 @@ contract NFT is ERC721, Ownable {
             //TODO: create custom error for this
             revert("not able to finish job");
         }
+        return tokenId;
+    }
+
+    //only can be cancelled while unclaimed
+    //maybe there should be a reward for all actions to take on an nft?
+    //or allow a portion of any so that their is a monetary model for say an app
+    //that removes bullshit jobs from the system for you?
+    //but that really only is for the original minter no?
+    function cancelJob(uint256 tokenId) public returns (uint256) {
+        Job memory job = _jobs[tokenId];
+        //require you are the "recipient" of the nft or owner
+        //TODO: ability to simplify be removing recipient in leu of owner?
+        //TODO: allow for transfer function for orgs that spin up and down allowing for tranfsers?
+
+        require(_ownerOf[tokenId] == msg.sender, "not the owner of the job");
+
+        //if owner of job require the job is not claimed
+        require(_claimedTokens[tokenId] == address(0), "job currently claimed");
+        //not sure if this logic is correct not really that experienced with address(0)
+        //and state allocation in solidity
+
+        //if not claimed and owned by the txn sender
+        //move funds to claimable from locked
+
+        //move from reclaimable
+        _reclaimableBalances[job.recipient] -=
+            job.executerFee +
+            job.recruiterFee;
+        //move to claimable
+        _claimableBalances[job.recipient] += job.recruiterFee + job.executerFee;
+
+        //burn nft
+        _burn(tokenId);
+        return tokenId;
+    }
+
+    //TODO: monetary incentive for making this happen less often?
+    //can a minter add a cost to unclaim?
+    //can this be best handled implicitly through reputation systems?
+    function unClaimJob(uint256 tokenId) public returns (uint256) {
+        require(
+            _claimedTokens[tokenId] == msg.sender,
+            "you are not the claimer on this job"
+        );
+
+        Job memory job = _jobs[tokenId];
+        uint256 _totalFee = job.executerFee + job.recruiterFee;
+
+        //if the user is the claimer. delete claim and move capital back to reclaimable
+        _lockedBlances[msg.sender] -= _totalFee;
+        //TODO: should follow a patter for how we access recipient / owner etc.
+        //sloppy right now
+        _reclaimableBalances[job.recipient] += _totalFee;
+
+        //unclaim nft
+        delete _claimedTokens[tokenId];
+
         return tokenId;
     }
 

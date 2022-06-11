@@ -1,4 +1,4 @@
 .env
 out/
-cache/
+contracts/cache/
 /node_modules
