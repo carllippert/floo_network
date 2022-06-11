@@ -220,6 +220,54 @@ contract NFT is ERC721, Ownable {
         return tokenId;
     }
 
+    //TODO: design of hooks to allow for arbitrary complexity for "completion state determination"
+    function finishJob(uint256 tokenId, address executer)
+        public
+        returns (uint256)
+    {
+        //token exists
+        _exists(tokenId);
+        //require that the token is available to be claimed
+        //token not burned
+        //token either unclaimed or claimed by executer
+        if (
+            _claimedTokens[tokenId] == address(0) ||
+            _claimedTokens[tokenId] == executer
+        ) {
+            //can be finished if either unclaimed or claimed by finisher
+            Job memory job = _jobs[tokenId];
+            uint256 _totalFee = job.executerFee + job.recruiterFee;
+            // START by reducing balances from corresponding balances
+            //from the person who made the job in the first place
+            //if the token was claimed.
+            //move money from locked to claimable
+            if (_claimedTokens[tokenId] == executer) {
+                //person who minted the job with their money gets money removed from locked
+                _lockedBlances[job.recipient] -= _totalFee;
+            } else {
+                //if job was *NOT* claimed.
+                //we allow for finishing of unclaimed jobs as a nicety.
+                //move from origin of balance to finisher
+                _reclaimableBalances[job.recipient] -= _totalFee;
+            }
+
+            //pay out to recruiter && executer
+            //recruiter receives recruiter fee
+            _claimableBalances[_jobsRecruiter[tokenId]] += job.recruiterFee;
+            //executer receives executer fee
+            _claimableBalances[executer] += job.executerFee;
+
+            //unclaim nft
+            delete _claimedTokens[tokenId];
+            //burn to zero address
+            _burn(tokenId);
+        } else {
+            //TODO: create custom error for this
+            revert("not able to finish job");
+        }
+        return tokenId;
+    }
+
     /**
      * @dev Returns whether `tokenId` exists.
      *
