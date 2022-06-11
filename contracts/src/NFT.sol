@@ -70,6 +70,13 @@ contract NFT is ERC721, Ownable {
     //incentives
     mapping(uint256 => Job) private _jobs;
 
+    //claimed tokens ( work being done! )
+    //TODO: how will user best determine what they currently have claimed?
+    mapping(uint256 => address) private _claimedTokens;
+
+    //recruiter for job
+    mapping(uint256 => address) private _jobsRecruiter;
+
     //claimable balances
     //from a entity creating a job. the balances start here
     //creator balance is claimable right away
@@ -79,18 +86,17 @@ contract NFT is ERC721, Ownable {
 
     //locked balances
     //once a job is claimed, the balances are locked here
-    mapping(address => uint256) private _lockedBlances; 
+    mapping(address => uint256) private _lockedBlances;
 
     //reclaimable balances ( balances from burnable tokens )
     mapping(address => uint256) private _reclaimableBalances;
-
 
     constructor(string memory _name, string memory _symbol)
         ERC721(_name, _symbol)
     {}
 
     function mintTo(
-        address _creator, 
+        address _creator,
         address _recipient,
         string memory _tokenURI,
         uint256 _executerFee,
@@ -108,16 +114,14 @@ contract NFT is ERC721, Ownable {
         _safeMint(_recipient, _tokenId);
         _setTokenURI(_tokenId, _tokenURI);
 
-
         //set claimable for creator
         //creator just gets paid right away in current thinking
         _claimableBalances[_creator] = _creatorFee;
 
         //set reclaimable for executer && recruiter ( both unknown at this point )
-        //so the person who sent the money the base user, can claim this back if 
+        //so the person who sent the money the base user, can claim this back if
         //no one does the work or if they are fishing etc
         _reclaimableBalances[_recipient] = _executerFee + _recruiterFee;
-        
 
         _jobs[_tokenId] = Job({
             recipient: _recipient,
@@ -193,6 +197,27 @@ contract NFT is ERC721, Ownable {
         Job memory _job = _jobs[tokenId];
 
         return _job;
+    }
+
+    //should maybe the recruiter be able to request to claim part of executer fee
+    //vs the creator needing to explicitly set and correctly price a recruiter fee?
+    function claimJob(
+        uint256 tokenId,
+        address recruiter,
+        address executer
+    ) public returns (uint256) {
+        //token exists
+        _exists(tokenId);
+        //require that the token is available to be claimed
+        //token not burned
+        //token not currently claimed
+        //TODO: this is probs shit logic
+        require(_claimedTokens[tokenId] == address(0), "token already claimed");
+
+        _jobsRecruiter[tokenId] = recruiter;
+        _claimedTokens[tokenId] = executer;
+
+        return tokenId;
     }
 
     /**
