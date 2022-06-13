@@ -275,6 +275,7 @@ contract NFT is ERC721, Ownable {
     //or allow a portion of any so that their is a monetary model for say an app
     //that removes bullshit jobs from the system for you?
     //but that really only is for the original minter no?
+    //TODO: allow the recruiter bounty to be taken by MEV if deadline has passed?
     function cancelJob(uint256 tokenId) public returns (uint256) {
         Job memory job = _jobs[tokenId];
         //require you are the "recipient" of the nft or owner

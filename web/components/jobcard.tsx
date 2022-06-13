@@ -3,6 +3,7 @@ import { useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber, ethers } from "ethers";
+import ClaimButton from "./claimbutton";
 
 type Job = {
   recipient: string;
@@ -19,7 +20,18 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   let [job, setJob] = useState<Job | null>(null);
 
-  const { data } = useContractRead(
+  const { data: jobData } = useContractRead(
+    {
+      addressOrName: contract_address,
+      contractInterface: MLS_NFT_CONTRACT.abi,
+    },
+    "getJob",
+    {
+      args: tokenID,
+    }
+  );
+
+  const { data: claimData } = useContractRead(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
@@ -53,26 +65,24 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   useEffect(() => {
     // console.log("Data in Job Card -> " + tokenID + " " + JSON.stringify(data));
-    if (data && !job) {
+    if (jobData && !job) {
       //take array make into struct and set in state.
       let job: Job = {
-        recipient: data[0],
-        executorFee: parseInt(BigNumber.from(data[1])._hex),
-        creatorFee: parseInt(BigNumber.from(data[2])._hex),
-        recruiterFee: parseInt(BigNumber.from(data[3])._hex),
-        deadline: parseInt(BigNumber.from(data[4])._hex),
-        tokenURI: String(data[5]),
+        recipient: jobData[0],
+        executorFee: parseInt(BigNumber.from(jobData[1])._hex),
+        creatorFee: parseInt(BigNumber.from(jobData[2])._hex),
+        recruiterFee: parseInt(BigNumber.from(jobData[3])._hex),
+        deadline: parseInt(BigNumber.from(jobData[4])._hex),
+        tokenURI: String(jobData[5]),
       };
 
       setJob(job);
       console.log("Job ?=> " + tokenID + " " + JSON.stringify(job, null, 3));
     }
-  }, [data]);
+  }, [jobData]);
 
   return (
-    <li
-      className="card col-span-1 flex flex-col  bg-base-300 rounded-lg shadow-xl"
-    >
+    <li className="card col-span-1 flex flex-col  bg-base-300 rounded-lg shadow-xl">
       {metadata ? (
         <>
           <figure>
@@ -85,26 +95,27 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
             </h2>
             {/* <p>If a dog chews shoes whose shoes does he choose?</p> */}
             <div className="card-actions">
+              <ClaimButton tokenID={tokenID}/>
               <div>
                 <div>Pays</div>
 
                 <div className="badge badge-outline">
                   {" "}
-                  {ethers.utils.formatEther(job?.executorFee)}
+                  {ethers.utils.formatEther(jobData?.executorFee)}
                 </div>
               </div>
               <div>
                 <div> Creator App Reward</div>
                 <div className="badge badge-outline">
                   {" "}
-                  {ethers.utils.formatEther(job?.creatorFee)}
+                  {ethers.utils.formatEther(jobData?.creatorFee)}
                 </div>
               </div>
               <div>
                 <div>Recruiter App Reward</div>
                 <div className="badge badge-outline">
                   {" "}
-                  {ethers.utils.formatEther(job?.recruiterFee)}
+                  {ethers.utils.formatEther(jobData?.recruiterFee)}
                 </div>
               </div>
             </div>
