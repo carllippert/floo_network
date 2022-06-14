@@ -23,15 +23,12 @@ const Jobs: NextPage = () => {
   );
 
   useEffect(() => {
-    console.log("contractRead", JSON.stringify(data));
     if (data) {
       let number = BigNumber.from(data);
 
-      console.log("number", number);
-
       let parsed = parseInt(number._hex);
 
-      console.log("parsed", parsed);
+      console.log("CurrentTokenID", parsed);
 
       setJobsCount(parsed);
 

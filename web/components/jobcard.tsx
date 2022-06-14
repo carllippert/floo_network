@@ -5,6 +5,8 @@ import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber, ethers } from "ethers";
 import ClaimButton from "./claimbutton";
 
+let zeroAddress = "0x0000000000000000000000000000000000000000";
+
 type Job = {
   recipient: string;
   executorFee: number;
@@ -18,7 +20,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
 
-  let [job, setJob] = useState<Job | null>(null);
+  let [job, setJob] = useState<Job>();
 
   const { data: jobData } = useContractRead(
     {
@@ -36,7 +38,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
     },
-    "getJob",
+    "getClaimStatus",
     {
       args: tokenID,
     }
@@ -64,7 +66,9 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   }, [job]);
 
   useEffect(() => {
-    // console.log("Data in Job Card -> " + tokenID + " " + JSON.stringify(data));
+    console.log(
+      "Data in Job Card -> " + tokenID + " " + JSON.stringify(jobData)
+    );
     if (jobData && !job) {
       //take array make into struct and set in state.
       let job: Job = {
@@ -83,7 +87,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   return (
     <li className="card col-span-1 flex flex-col  bg-base-300 rounded-lg shadow-xl">
-      {metadata ? (
+      {metadata && job ? (
         <>
           <figure>
             <img src={metadata.image} alt="Work" />
@@ -93,29 +97,30 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
               {metadata?.description}
               {/* <div className="badge badge-secondary">NEW</div> */}
             </h2>
-            {/* <p>If a dog chews shoes whose shoes does he choose?</p> */}
             <div className="card-actions">
-              <ClaimButton tokenID={tokenID}/>
+              <ClaimButton
+                tokenID={tokenID}
+                claimedBy={claimData ? String(claimData) : zeroAddress}
+              />
               <div>
                 <div>Pays</div>
 
                 <div className="badge badge-outline">
                   {" "}
-                  {ethers.utils.formatEther(jobData?.executorFee)}
+                  {ethers.utils.formatEther(job?.executorFee)}
                 </div>
               </div>
               <div>
                 <div> Creator App Reward</div>
                 <div className="badge badge-outline">
                   {" "}
-                  {ethers.utils.formatEther(jobData?.creatorFee)}
+                  {ethers.utils.formatEther(job.creatorFee)}
                 </div>
               </div>
               <div>
                 <div>Recruiter App Reward</div>
                 <div className="badge badge-outline">
-                  {" "}
-                  {ethers.utils.formatEther(jobData?.recruiterFee)}
+                  {ethers.utils.formatEther(job.recruiterFee)}
                 </div>
               </div>
             </div>

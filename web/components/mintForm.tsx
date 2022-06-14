@@ -38,10 +38,14 @@ const MintForm = () => {
       onSettled(data, error) {
         console.log("Settled", { data, error });
       },
+      onSuccess(data) {
+        console.log("Success!", data);
+      },
     }
   );
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("Submit?");
     try {
       e.preventDefault();
       setLoading(true);
@@ -54,7 +58,7 @@ const MintForm = () => {
         blockNumber.data
       ) {
         //MINT!
-     
+
         if (signer && account) {
           console.log("Minting");
           let deadline = blockNumber.data + 100;
@@ -71,8 +75,10 @@ const MintForm = () => {
               form.creator,
               deadline,
             ],
-            overrides: { value: totalValue, gasLimit: 10000000 },
+            overrides: { value: totalValue },
           });
+        } else {
+          console.log("No account or signer.");
         }
       } else {
         alert("Please fill in all fields");

@@ -13,16 +13,6 @@ const Mint = () => {
     chainId: chain,
   });
 
-  const contractRead = useContractRead(
-    {
-      addressOrName: contract_address,
-      contractInterface: MLS_NFT_CONTRACT.abi,
-    },
-    "tokenURI",
-    {
-      args: "1",
-    }
-  );
 
   useEffect(() => {
     if (activeChain?.id !== chain) {

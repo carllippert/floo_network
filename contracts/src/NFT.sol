@@ -199,6 +199,39 @@ contract NFT is ERC721, Ownable {
         return _job;
     }
 
+    function getClaimStatus(uint256 tokenId)
+        public
+        view
+        virtual
+        returns (address)
+    {
+        require(_exists(tokenId), "query for nonexistent token");
+        //TODO: should be in the graph? also how best to deal with unclaimed?
+        //will it be zero address?
+        address _claimer = _claimedTokens[tokenId];
+
+        return _claimer;
+    }
+
+    //TODO: user should be able to listen to these events
+    //aka there should be events in general
+    function getBalances(address payee)
+        public
+        view
+        virtual
+        returns (
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        uint256 _claimable = _claimableBalances[payee];
+        uint256 _locked = _lockedBlances[payee];
+        uint256 _reclaimable = _reclaimableBalances[payee];
+
+        return (_claimable, _reclaimable, _locked);
+    }
+
     //should maybe the recruiter be able to request to claim part of executer fee
     //vs the creator needing to explicitly set and correctly price a recruiter fee?
     //TODO: a shit load of complicated stuff related to aggregate identities goldlists, disallow lists
