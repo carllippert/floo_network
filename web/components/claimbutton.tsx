@@ -16,11 +16,8 @@ const ClaimButton = ({
   const { data: signer } = useSigner();
   const { data: account } = useAccount();
 
-  const claimSettled = (data: any, error: any) => {
-    console.log("Settled", { data, error });
-  };
 
-  const { data, isError, isLoading, write } = useContractWrite(
+  const { write: claimToken } = useContractWrite(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
@@ -29,10 +26,40 @@ const ClaimButton = ({
     "claimJob",
     {
       onSettled(data, error) {
-        claimSettled(data, error);
+        console.log("Settled", data, error);
       },
     }
   );
+
+  const {  write: unClaimToken } = useContractWrite(
+    {
+      addressOrName: contract_address,
+      contractInterface: MLS_NFT_CONTRACT.abi,
+      signerOrProvider: signer,
+    },
+    "unClaimJob",
+    {
+      onSettled(data, error) {
+        console.log("Settled", data, error);
+      },
+    }
+  );
+
+  const claim = async () => {
+    await claimToken({
+      args: [
+        tokenID
+      ]
+    });
+  }
+
+  const unClaim = async () => {
+    await unClaimToken({
+      args: [
+        tokenID
+      ]
+    });
+  }
 
   useEffect(() => {
     if (claimedBy !== zeroAddress) {
@@ -46,9 +73,15 @@ const ClaimButton = ({
   return (
     <>
       {claimed ? (
-        "Claimed"
+        <>
+          {weClaimed ? (
+            <button onClick={unClaim}className="btn btn-secondary">Unclaim</button>
+          ) : (
+            <div>Claimed By: {claimedBy.substring(0, 5)}...</div>
+          )}
+        </>
       ) : (
-        <button className="btn btn-primary">Claim Job</button>
+        <button onClick={claim} className="btn btn-primary">Claim Job</button>
       )}
     </>
   );
