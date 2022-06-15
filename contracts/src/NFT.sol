@@ -86,7 +86,7 @@ contract NFT is ERC721, Ownable {
 
     //locked balances
     //once a job is claimed, the balances are locked here
-    mapping(address => uint256) private _lockedBlances;
+    mapping(address => uint256) private _lockedBalances;
 
     //reclaimable balances ( balances from burnable tokens )
     mapping(address => uint256) private _reclaimableBalances;
@@ -226,7 +226,7 @@ contract NFT is ERC721, Ownable {
         )
     {
         uint256 _claimable = _claimableBalances[payee];
-        uint256 _locked = _lockedBlances[payee];
+        uint256 _locked = _lockedBalances[payee];
         uint256 _reclaimable = _reclaimableBalances[payee];
 
         return (_claimable, _reclaimable, _locked);
@@ -249,8 +249,20 @@ contract NFT is ERC721, Ownable {
         //TODO: this is probs shit logic
         require(_claimedTokens[tokenId] == address(0), "token already claimed");
 
+        Job memory job = _jobs[tokenId];
+
         _jobsRecruiter[tokenId] = recruiter;
         _claimedTokens[tokenId] = executer;
+
+        uint256 _totalFee = job.executerFee + job.recruiterFee;
+
+        //lock up funds
+        //lock on the creator for now
+        //TODO: maybe we actually lock on the user.
+        //we want to establish predictability for workers
+        //how can interfaces best understand expected earnings for each participant?
+        _reclaimableBalances[job.recipient] -= _totalFee;
+        _lockedBalances[job.recipient] += _totalFee;
 
         return tokenId;
     }
@@ -278,7 +290,7 @@ contract NFT is ERC721, Ownable {
             //move money from locked to claimable
             if (_claimedTokens[tokenId] == executer) {
                 //person who minted the job with their money gets money removed from locked
-                _lockedBlances[job.recipient] -= _totalFee;
+                _lockedBalances[job.recipient] -= _totalFee;
             } else {
                 //if job was *NOT* claimed.
                 //we allow for finishing of unclaimed jobs as a nicety.
@@ -350,7 +362,7 @@ contract NFT is ERC721, Ownable {
         uint256 _totalFee = job.executerFee + job.recruiterFee;
 
         //if the user is the claimer. delete claim and move capital back to reclaimable
-        _lockedBlances[msg.sender] -= _totalFee;
+        _lockedBalances[job.recipient] -= _totalFee;
         //TODO: should follow a patter for how we access recipient / owner etc.
         //sloppy right now
         _reclaimableBalances[job.recipient] += _totalFee;
