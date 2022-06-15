@@ -4,19 +4,23 @@ import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber, ethers } from "ethers";
 import ClaimButton from "./claimbutton";
+import { useAppContext } from "../context/appContext";
+import { formatEther } from "ethers/lib/utils";
 
 let zeroAddress = "0x0000000000000000000000000000000000000000";
 
 type Job = {
   recipient: string;
-  executorFee: number;
-  creatorFee: number;
-  recruiterFee: number;
+  executorFee: string;
+  creatorFee: string;
+  recruiterFee: string;
   deadline: number;
   tokenURI: string;
 };
 
 const JobCard = ({ tokenID }: { tokenID: string }) => {
+  let { ethPrice } = useAppContext();
+
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
 
@@ -73,11 +77,11 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
       //take array make into struct and set in state.
       let job: Job = {
         recipient: jobData[0],
-        executorFee: parseInt(BigNumber.from(jobData[1])._hex),
-        creatorFee: parseInt(BigNumber.from(jobData[2])._hex),
-        recruiterFee: parseInt(BigNumber.from(jobData[3])._hex),
-        deadline: parseInt(BigNumber.from(jobData[4])._hex),
-        tokenURI: String(jobData[5]),
+        executorFee: formatEther(jobData[1]),
+        creatorFee: formatEther(jobData[2]),
+        recruiterFee: formatEther(jobData[3]),
+        deadline: jobData[4],
+        tokenURI: jobData[5],
       };
 
       setJob(job);
@@ -106,22 +110,17 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
                 <div>Pays</div>
 
                 <div className="badge badge-outline">
-                  {" "}
-                  {ethers.utils.formatEther(job?.executorFee)}
+                  {job.executorFee}
+                  ETH
                 </div>
               </div>
               <div>
                 <div> Creator App Reward</div>
-                <div className="badge badge-outline">
-                  {" "}
-                  {ethers.utils.formatEther(job.creatorFee)}
-                </div>
+                <div className="badge badge-outline">{job.creatorFee}</div>
               </div>
               <div>
                 <div>Recruiter App Reward</div>
-                <div className="badge badge-outline">
-                  {ethers.utils.formatEther(job.recruiterFee)}
-                </div>
+                <div className="badge badge-outline">{job.recruiterFee}</div>
               </div>
             </div>
           </div>

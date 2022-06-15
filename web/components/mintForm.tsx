@@ -2,20 +2,22 @@ import { FormEvent, useState } from "react";
 import { useSigner, useAccount, useBlockNumber, useContractWrite } from "wagmi";
 import { contract_address, metadata_url } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
+import { BigNumber } from "ethers";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 
 type FormInput = {
   metadata: string;
-  executer: number;
-  creator: number;
-  recruiter: number;
+  executer: string;
+  creator: string;
+  recruiter: string;
 };
 
 const MintForm = () => {
   let [form, setForm] = useState<FormInput>({
     metadata: metadata_url,
-    executer: 10000,
-    creator: 100000,
-    recruiter: 100000,
+    executer: "0.1",
+    creator: "0.005",
+    recruiter: "0.005",
   });
 
   let [loading, setLoading] = useState(false);
@@ -51,10 +53,10 @@ const MintForm = () => {
       setLoading(true);
 
       if (
-        form.executer >= 0 &&
-        form.creator >= 0 &&
+        form.executer &&
+        form.creator &&
         form.metadata &&
-        form.recruiter >= 0 &&
+        form.recruiter &&
         blockNumber.data
       ) {
         //MINT!
@@ -63,16 +65,26 @@ const MintForm = () => {
           console.log("Minting");
           let deadline = blockNumber.data + 100;
 
-          let totalValue = form.executer + form.creator + form.recruiter;
+          let ethExec = parseUnits(form.executer);
+          let ethCreator = parseUnits(form.creator);
+          let ethRecruiter = parseUnits(form.recruiter);
+
+          console.log("ethExec", ethExec);
+          console.log("ethCreator", ethCreator);
+          console.log("ethRecruiter", ethRecruiter);
+
+          let totalValue = BigNumber.from(ethExec)
+            .add(BigNumber.from(ethCreator))
+            .add(BigNumber.from(ethRecruiter));
 
           await write({
             args: [
               account.address, //creator
               account.address, //receiver
               form.metadata,
-              form.executer,
-              form.recruiter,
-              form.creator,
+              ethExec,
+              ethRecruiter,
+              ethCreator,
               deadline,
             ],
             overrides: { value: totalValue },
@@ -131,7 +143,7 @@ const MintForm = () => {
                   name="executer"
                   id="executer"
                   onChange={(e) =>
-                    setForm({ ...form, executer: Number(e.target.value) })
+                    setForm({ ...form, executer: e.target.value })
                   }
                   value={form.executer}
                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md text-black"
@@ -162,7 +174,7 @@ const MintForm = () => {
                   name="recruiter"
                   id="recruiter"
                   onChange={(e) =>
-                    setForm({ ...form, recruiter: Number(e.target.value) })
+                    setForm({ ...form, recruiter: e.target.value })
                   }
                   value={form.recruiter}
                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md text-black"
@@ -193,7 +205,7 @@ const MintForm = () => {
                   name="creator"
                   id="creator"
                   onChange={(e) =>
-                    setForm({ ...form, creator: Number(e.target.value) })
+                    setForm({ ...form, creator: e.target.value })
                   }
                   value={form.creator}
                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md text-black"

@@ -3,14 +3,36 @@ import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
+import { useAppContext } from "../context/appContext";
+import numeral from "numeral";
 
 type Balances = {
-  claimable: number;
-  reclaimable: number;
-  locked: number;
+  claimable: string;
+  reclaimable: string;
+  locked: string;
+};
+
+const ethToUsdc = (eth: BigNumber, ethPrice: number) => {
+  let claimableRaw = eth;
+  // console.log("claimableRaw", eth);
+  let claimableHex = claimableRaw._hex;
+  // console.log("claimableHex", claimableHex);
+  let claimableBigNumber = BigNumber.from(claimableHex);
+  console.log("claimableBigNumber", claimableBigNumber);
+  let claimable = ethers.utils.formatUnits(claimableRaw, "ether");
+  console.log("claimable", claimable);
+  // let number = parseFloat(claimable);
+  // console.log("usdc", number);
+
+  let real = numeral(claimable).format("0,0.00");
+  console.log("real", real);
+
+  return real;
 };
 
 const Balances = () => {
+  let { ethPrice } = useAppContext();
   const [balances, setBalances] = useState<Balances>();
   const { data: account } = useAccount();
 
@@ -21,17 +43,18 @@ const Balances = () => {
     },
     "getBalances",
     {
-      args: account?.address,
+      args: [account?.address],
     }
   );
 
   useEffect(() => {
     if (balanceData && !balances) {
       console.log("Balances", balanceData);
+
       let newBalances: Balances = {
-        claimable: parseInt(BigNumber.from(balanceData[0])._hex),
-        reclaimable: parseInt(BigNumber.from(balanceData[1])._hex),
-        locked: parseInt(BigNumber.from(balanceData[2])._hex),
+        claimable: ethToUsdc(balanceData[0], ethPrice),
+        reclaimable: ethToUsdc(balanceData[1], ethPrice),
+        locked: ethToUsdc(balanceData[2], ethPrice),
       };
 
       setBalances(newBalances);
