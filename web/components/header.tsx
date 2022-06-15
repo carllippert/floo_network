@@ -1,14 +1,9 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAppContext } from "../context/appContext";
-import { useBlockNumber } from "wagmi";
 import Link from "next/link";
 
 const Header = () => {
   const { setEvil } = useAppContext();
-
-  const blockNumber = useBlockNumber({
-    watch: true,
-  });
 
   return (
     <div className="navbar bg-base-100">
@@ -45,9 +40,6 @@ const Header = () => {
             </li>
             <li>
               <a>About</a>
-            </li>
-            <li>
-              <a>{blockNumber?.data}</a>
             </li>
           </ul>
         </div>

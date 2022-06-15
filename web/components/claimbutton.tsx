@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSigner, useAccount, useBlockNumber, useContractWrite } from "wagmi";
+import { useSigner, useAccount, useContractWrite } from "wagmi";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { contract_address, metadata_url } from "../utils/consts";
 let zeroAddress = "0x0000000000000000000000000000000000000000";

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAccount, useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
-import { BigNumber, ethers } from "ethers";
 import ClaimButton from "./claimbutton";
 import BurnButton from "./burnbutton";
 import { useAppContext } from "../context/appContext";
@@ -127,7 +126,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
               {metadata?.description}
               {account?.address === job.recipient ? (
                 <div className="badge badge-secondary">Ours</div>
-              ) : null}
+              ) : null} 
             </h2>
             <div className="card-actions">
               <div>
