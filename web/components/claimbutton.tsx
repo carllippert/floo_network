@@ -82,7 +82,9 @@ const ClaimButton = ({
               Unclaim
             </button>
           ) : (
-            <div>Claimed By: {claimedBy.substring(0, 5)}...</div>
+            <div className="bg-info">
+              Claimed By: {claimedBy.substring(0, 5)}...
+            </div>
           )}
         </>
       ) : (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber, ethers } from "ethers";
@@ -24,6 +24,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
+  const { data: account } = useAccount();
 
   let [job, setJob] = useState<Job>();
 
@@ -100,7 +101,9 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
           <div className="card-body">
             <h2 className="card-title">
               {metadata?.description}
-              {/* <div className="badge badge-secondary">NEW</div> */}
+              {account?.address === job.recipient ? (
+                <div className="badge badge-secondary">Ours</div>
+              ) : null}
             </h2>
             <div className="card-actions">
               <div>
@@ -124,7 +127,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
                   tokenID={tokenID}
                   claimedBy={claimData ? String(claimData) : zeroAddress}
                 />
-                <BurnButton tokenID={tokenID} />
+                <BurnButton tokenID={tokenID} recipient={job.recipient} />
               </div>
             </div>
           </div>

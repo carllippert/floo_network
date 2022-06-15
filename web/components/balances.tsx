@@ -19,14 +19,14 @@ const ethToUsdc = (eth: BigNumber, ethPrice: number) => {
   let claimableHex = claimableRaw._hex;
   // console.log("claimableHex", claimableHex);
   let claimableBigNumber = BigNumber.from(claimableHex);
-  console.log("claimableBigNumber", claimableBigNumber);
+  // console.log("claimableBigNumber", claimableBigNumber);
   let claimable = ethers.utils.formatUnits(claimableRaw, "ether");
-  console.log("claimable", claimable);
+  // console.log("claimable", claimable);
   // let number = parseFloat(claimable);
   // console.log("usdc", number);
 
   let real = numeral(claimable).format("0,0.00");
-  console.log("real", real);
+  // console.log("real", real);
 
   return real;
 };
