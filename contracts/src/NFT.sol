@@ -321,6 +321,10 @@ contract NFT is ERC721, Ownable {
     //that removes bullshit jobs from the system for you?
     //but that really only is for the original minter no?
     //TODO: allow the recruiter bounty to be taken by MEV if deadline has passed?
+    //TODO: Need to wire into "OwnerOf"
+    //TODO: need to override transfer function to deal with accounting for locked balances
+    //lock balances to token_id vs address?
+    //then you don't need to keep moving when NFT tranfered but may make accessing harder?
     function cancelJob(uint256 tokenId) public returns (uint256) {
         Job memory job = _jobs[tokenId];
         //require you are the "recipient" of the nft or owner
@@ -373,6 +377,9 @@ contract NFT is ERC721, Ownable {
         return tokenId;
     }
 
+    function getOwner(uint256 tokenId) public view returns (address) {
+        return _ownerOf[tokenId];
+    }
     /**
      * @dev Returns whether `tokenId` exists.
      *

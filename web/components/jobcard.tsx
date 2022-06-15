@@ -24,6 +24,8 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
+  let [burnt, setBurnt] = useState(false);
+
   const { data: account } = useAccount();
 
   let [job, setJob] = useState<Job>();
@@ -45,6 +47,17 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
       contractInterface: MLS_NFT_CONTRACT.abi,
     },
     "getClaimStatus",
+    {
+      args: tokenID,
+    }
+  );
+
+  const { data: ownerData } = useContractRead(
+    {
+      addressOrName: contract_address,
+      contractInterface: MLS_NFT_CONTRACT.abi,
+    },
+    "getOwner",
     {
       args: tokenID,
     }
@@ -72,9 +85,9 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   }, [job]);
 
   useEffect(() => {
-    console.log(
-      "Data in Job Card -> " + tokenID + " " + JSON.stringify(jobData)
-    );
+    // console.log(
+    //   "Data in Job Card -> " + tokenID + " " + JSON.stringify(jobData)
+    // );
     if (jobData && !job) {
       //take array make into struct and set in state.
       let job: Job = {
@@ -91,14 +104,25 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
     }
   }, [jobData]);
 
+  useEffect(() => {
+    if (String(ownerData) === zeroAddress) {
+      setBurnt(true);
+    }
+  }, [ownerData]);
+
   return (
-    <li className="card col-span-1 flex flex-col  bg-base-300 rounded-lg shadow-xl">
+    <li
+      className={`${
+        burnt ? "border-8 border-orange-400" : ""
+      } card col-span-1 flex flex-col rounded-lg shadow-xl bg-base-200 `}
+    >
       {metadata && job ? (
         <>
           <figure>
             <img src={metadata.image} alt="Work" />
           </figure>
           <div className="card-body">
+            {burnt ? "BURNT" : null}
             <h2 className="card-title">
               {metadata?.description}
               {account?.address === job.recipient ? (
