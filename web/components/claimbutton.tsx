@@ -16,7 +16,6 @@ const ClaimButton = ({
   const { data: signer } = useSigner();
   const { data: account } = useAccount();
 
-
   const { write: claimToken } = useContractWrite(
     {
       addressOrName: contract_address,
@@ -31,7 +30,7 @@ const ClaimButton = ({
     }
   );
 
-  const {  write: unClaimToken } = useContractWrite(
+  const { write: unClaimToken } = useContractWrite(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
@@ -46,20 +45,24 @@ const ClaimButton = ({
   );
 
   const claim = async () => {
-    await claimToken({
-      args: [
-        tokenID
-      ]
-    });
-  }
+    if (account) {
+      await claimToken({
+        args: [
+          tokenID,
+          account?.address, //recruiter
+          account?.address, //executer
+        ],
+      });
+    } else {
+      console.log("No account for claim");
+    }
+  };
 
   const unClaim = async () => {
     await unClaimToken({
-      args: [
-        tokenID
-      ]
+      args: [tokenID],
     });
-  }
+  };
 
   useEffect(() => {
     if (claimedBy !== zeroAddress) {
@@ -75,13 +78,17 @@ const ClaimButton = ({
       {claimed ? (
         <>
           {weClaimed ? (
-            <button onClick={unClaim}className="btn btn-secondary">Unclaim</button>
+            <button onClick={unClaim} className="btn btn-accent">
+              Unclaim
+            </button>
           ) : (
             <div>Claimed By: {claimedBy.substring(0, 5)}...</div>
           )}
         </>
       ) : (
-        <button onClick={claim} className="btn btn-primary">Claim Job</button>
+        <button onClick={claim} className="btn btn-primary">
+          Claim Job
+        </button>
       )}
     </>
   );

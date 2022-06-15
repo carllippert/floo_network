@@ -4,6 +4,7 @@ import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber, ethers } from "ethers";
 import ClaimButton from "./claimbutton";
+import BurnButton from "./burnbutton";
 import { useAppContext } from "../context/appContext";
 import { formatEther } from "ethers/lib/utils";
 
@@ -102,10 +103,6 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
               {/* <div className="badge badge-secondary">NEW</div> */}
             </h2>
             <div className="card-actions">
-              <ClaimButton
-                tokenID={tokenID}
-                claimedBy={claimData ? String(claimData) : zeroAddress}
-              />
               <div>
                 <div>Pays</div>
 
@@ -121,6 +118,13 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
               <div>
                 <div>Recruiter App Reward</div>
                 <div className="badge badge-outline">{job.recruiterFee}</div>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <ClaimButton
+                  tokenID={tokenID}
+                  claimedBy={claimData ? String(claimData) : zeroAddress}
+                />
+                <BurnButton tokenID={tokenID} />
               </div>
             </div>
           </div>
