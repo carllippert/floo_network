@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { useSigner, useAccount, useContractWrite } from "wagmi";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { contract_address, metadata_url } from "../utils/consts";
+import { Job } from "./jobcard";
 let zeroAddress = "0x0000000000000000000000000000000000000000";
 
 const ClaimButton = ({
-  tokenID,
-  claimedBy,
+  job
 }: {
-  tokenID: string;
-  claimedBy: string;
+  job: Job
 }) => {
   const [claimed, setClaimed] = useState(false);
   const [weClaimed, setWeClaimed] = useState(false);
@@ -48,7 +47,7 @@ const ClaimButton = ({
     if (account) {
       await claimToken({
         args: [
-          tokenID,
+          job.tokenID,
           account?.address, //recruiter
           account?.address, //executer
         ],
@@ -60,14 +59,14 @@ const ClaimButton = ({
 
   const unClaim = async () => {
     await unClaimToken({
-      args: [tokenID],
+      args: [job.tokenID],
     });
   };
 
   useEffect(() => {
-    if (claimedBy !== zeroAddress) {
+    if (job.claimer !== zeroAddress) {
       setClaimed(true);
-      if (claimedBy === account?.address) {
+      if (job.claimer === account?.address) {
         setWeClaimed(true);
       }
     }
@@ -84,7 +83,7 @@ const ClaimButton = ({
           ) : (
             <div className="bg-base-200 text-base rounded-md shadow-xl px-4">
               <div> Claimed By:</div>
-              {claimedBy.substring(0, 7)}...
+              {job.claimer.substring(0, 7)}...
             </div>
           )}
         </>

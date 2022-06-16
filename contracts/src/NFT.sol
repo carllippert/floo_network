@@ -72,10 +72,16 @@ contract NFT is ERC721, Ownable {
 
     //claimed tokens ( work being done! )
     //TODO: how will user best determine what they currently have claimed?
-    mapping(uint256 => address) private _claimedTokens;
+    mapping(uint256 => address) private _jobsClaimer;
 
     //recruiter for job
     mapping(uint256 => address) private _jobsRecruiter;
+
+    //cancelled jobs
+    mapping(uint256 => address) private _jobsCanceller;
+
+    //complated jobs
+    mapping(uint256 => address) private _jobsExecuter;
 
     //claimable balances
     //from a entity creating a job. the balances start here
@@ -199,18 +205,26 @@ contract NFT is ERC721, Ownable {
         return _job;
     }
 
-    function getClaimStatus(uint256 tokenId)
+    function getJobStatus(uint256 tokenId)
         public
         view
         virtual
-        returns (address)
+        returns (
+            address,
+            address,
+            address,
+            address
+        )
     {
         require(_exists(tokenId), "query for nonexistent token");
         //TODO: should be in the graph? also how best to deal with unclaimed?
         //will it be zero address?
-        address _claimer = _claimedTokens[tokenId];
+        address _claimer = _jobsClaimer[tokenId];
+        address _canceller = _jobsCanceller[tokenId];
+        address _recruiter = _jobsRecruiter[tokenId];
+        address _executer = _jobsExecuter[tokenId];
 
-        return _claimer;
+        return (_claimer, _canceller, _recruiter, _executer);
     }
 
     //TODO: user should be able to listen to these events
@@ -247,12 +261,12 @@ contract NFT is ERC721, Ownable {
         //token not burned
         //token not currently claimed
         //TODO: this is probs shit logic
-        require(_claimedTokens[tokenId] == address(0), "token already claimed");
+        require(_jobsClaimer[tokenId] == address(0), "token already claimed");
 
         Job memory job = _jobs[tokenId];
 
         _jobsRecruiter[tokenId] = recruiter;
-        _claimedTokens[tokenId] = executer;
+        _jobsClaimer[tokenId] = executer;
 
         uint256 _totalFee = job.executerFee + job.recruiterFee;
 
@@ -278,8 +292,8 @@ contract NFT is ERC721, Ownable {
         //token not burned
         //token either unclaimed or claimed by executer
         if (
-            _claimedTokens[tokenId] == address(0) ||
-            _claimedTokens[tokenId] == executer
+            _jobsClaimer[tokenId] == address(0) ||
+            _jobsClaimer[tokenId] == executer
         ) {
             //can be finished if either unclaimed or claimed by finisher
             Job memory job = _jobs[tokenId];
@@ -288,7 +302,7 @@ contract NFT is ERC721, Ownable {
             //from the person who made the job in the first place
             //if the token was claimed.
             //move money from locked to claimable
-            if (_claimedTokens[tokenId] == executer) {
+            if (_jobsClaimer[tokenId] == executer) {
                 //person who minted the job with their money gets money removed from locked
                 _lockedBalances[job.recipient] -= _totalFee;
             } else {
@@ -305,9 +319,10 @@ contract NFT is ERC721, Ownable {
             _claimableBalances[executer] += job.executerFee;
 
             //unclaim nft
-            delete _claimedTokens[tokenId];
+            delete _jobsClaimer[tokenId];
             //burn to zero address
-            _burn(tokenId);
+            // _burn(tokenId);
+            _jobsExecuter[tokenId] = executer;
         } else {
             //TODO: create custom error for this
             revert("not able to finish job");
@@ -334,7 +349,7 @@ contract NFT is ERC721, Ownable {
         require(_ownerOf[tokenId] == msg.sender, "not the owner of the job");
 
         //if owner of job require the job is not claimed
-        require(_claimedTokens[tokenId] == address(0), "job currently claimed");
+        require(_jobsClaimer[tokenId] == address(0), "job currently claimed");
         //not sure if this logic is correct not really that experienced with address(0)
         //and state allocation in solidity
 
@@ -348,8 +363,20 @@ contract NFT is ERC721, Ownable {
         //move to claimable
         _claimableBalances[job.recipient] += job.recruiterFee + job.executerFee;
 
+        //make claimer zero address
+        _jobsClaimer[tokenId] = address(0);
+        //write down who cancelled job
+        //used also for determining that job is cancelled
+        //not great but simple for now
+        _jobsCanceller[tokenId] = job.recipient;
+
         //burn nft
-        _burn(tokenId);
+        // _burn(tokenId);
+        //TODO: we should probably burn
+        //but perhaps we need to evaluate what that does to work
+        //continuity. aka if you do gant style requirements
+        //perhaps instead of _burn, there needs to be a complete mapping?
+        //also requires we update the transfer function
         return tokenId;
     }
 
@@ -358,7 +385,7 @@ contract NFT is ERC721, Ownable {
     //can this be best handled implicitly through reputation systems?
     function unClaimJob(uint256 tokenId) public returns (uint256) {
         require(
-            _claimedTokens[tokenId] == msg.sender,
+            _jobsClaimer[tokenId] == msg.sender,
             "you are not the claimer on this job"
         );
 
@@ -372,14 +399,11 @@ contract NFT is ERC721, Ownable {
         _reclaimableBalances[job.recipient] += _totalFee;
 
         //unclaim nft
-        delete _claimedTokens[tokenId];
+        delete _jobsClaimer[tokenId];
 
         return tokenId;
     }
 
-    function getOwner(uint256 tokenId) public view returns (address) {
-        return _ownerOf[tokenId];
-    }
     /**
      * @dev Returns whether `tokenId` exists.
      *

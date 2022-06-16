@@ -1,18 +1,13 @@
 import { useSigner, useAccount, useContractWrite } from "wagmi";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { contract_address } from "../utils/consts";
+import { Job } from "./jobcard";
 
-const BurnButton = ({
-  tokenID,
-  recipient,
-}: {
-  tokenID: string;
-  recipient: string;
-}) => {
+const CancelButton = ({ job }: { job: Job }) => {
   const { data: account } = useAccount();
   const { data: signer } = useSigner();
 
-  const { write: burnToken } = useContractWrite(
+  const { write: cancelToken } = useContractWrite(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
@@ -26,22 +21,22 @@ const BurnButton = ({
     }
   );
 
-  const burn = async () => {
-    console.log("BURN");
-    await burnToken({
-      args: [tokenID],
+  const cancel = async () => {
+    console.log("Cancel");
+    await cancelToken({
+      args: [job.tokenID],
     });
   };
 
   return (
     <button
-      onClick={burn}
-      disabled={account?.address !== recipient}
+      onClick={cancel}
+      disabled={account?.address !== job.recipient}
       className="btn btn-secondary disabled:bg-base-200"
     >
-      Burn 🔥
+      Cancel
     </button>
   );
 };
 
-export default BurnButton;
+export default CancelButton;

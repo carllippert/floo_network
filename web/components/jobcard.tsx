@@ -3,19 +3,24 @@ import { useAccount, useContractRead } from "wagmi";
 import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import ClaimButton from "./claimbutton";
-import BurnButton from "./burnbutton";
+import CancelButton from "./cancelbutton";
 import { useAppContext } from "../context/appContext";
 import { formatEther } from "ethers/lib/utils";
 
 let zeroAddress = "0x0000000000000000000000000000000000000000";
 
-type Job = {
+export type Job = {
+  tokenID: string;
   recipient: string;
   executorFee: string;
   creatorFee: string;
   recruiterFee: string;
   deadline: number;
   tokenURI: string;
+  claimer: string;
+  recruiter: string;
+  canceller: string;
+  executer: string; 
 };
 
 const JobCard = ({ tokenID }: { tokenID: string }) => {
@@ -23,11 +28,23 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
 
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
-  let [burnt, setBurnt] = useState(false);
+  let [cancelled, setCancelled] = useState(false);
 
   const { data: account } = useAccount();
 
-  let [job, setJob] = useState<Job>();
+  let [job, setJob] = useState<Job>({
+    tokenID,
+    recipient: "",
+    executorFee: "",
+    creatorFee: "",
+    recruiterFee: "",
+    deadline: 0,
+    tokenURI: "",
+    claimer: "",
+    recruiter: "",
+    canceller: "",
+    executer: "", 
+  });
 
   const { data: jobData } = useContractRead(
     {
@@ -40,23 +57,12 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
     }
   );
 
-  const { data: claimData } = useContractRead(
+  const { data: jobStatusData } = useContractRead(
     {
       addressOrName: contract_address,
       contractInterface: MLS_NFT_CONTRACT.abi,
     },
-    "getClaimStatus",
-    {
-      args: tokenID,
-    }
-  );
-
-  const { data: ownerData } = useContractRead(
-    {
-      addressOrName: contract_address,
-      contractInterface: MLS_NFT_CONTRACT.abi,
-    },
-    "getOwner",
+    "getJobStatus",
     {
       args: tokenID,
     }
@@ -84,12 +90,10 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   }, [job]);
 
   useEffect(() => {
-    // console.log(
-    //   "Data in Job Card -> " + tokenID + " " + JSON.stringify(jobData)
-    // );
-    if (jobData && !job) {
+    if (jobData) {
       //take array make into struct and set in state.
-      let job: Job = {
+      let newJob: Job = {
+        ...job,
         recipient: jobData[0],
         executorFee: formatEther(jobData[1]),
         creatorFee: formatEther(jobData[2]),
@@ -98,21 +102,33 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
         tokenURI: jobData[5],
       };
 
-      setJob(job);
+      setJob(newJob);
       console.log("Job ?=> " + tokenID + " " + JSON.stringify(job, null, 3));
     }
   }, [jobData]);
 
   useEffect(() => {
-    if (String(ownerData) === zeroAddress) {
-      setBurnt(true);
+    console.log("Job Status", JSON.stringify(jobStatusData));
+    //  return (_claimer, _canceller, _recruiter);
+    if (jobStatusData) {
+      setJob({
+        ...job,
+        claimer: jobStatusData[0],
+        canceller: jobStatusData[1],
+        recruiter: jobStatusData[2],
+        executer: jobStatusData[3], 
+      });
+      if (jobStatusData[1] !== zeroAddress) {
+        //job has been cancelled by nonzeroaddress
+        setCancelled(true);
+      }
     }
-  }, [ownerData]);
+  }, [jobStatusData]);
 
   return (
     <li
       className={`${
-        burnt ? "border-8 border-orange-400" : ""
+        cancelled ? "border-8 border-orange-400" : ""
       } card col-span-1 flex flex-col rounded-lg shadow-xl bg-base-200 `}
     >
       {metadata && job ? (
@@ -121,13 +137,20 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
             <img src={metadata.image} alt="Work" />
           </figure>
           <div className="card-body">
-            {burnt ? "BURNT" : null}
-            <h2 className="card-title">
-              {metadata?.description}
-              {account?.address === job.recipient ? (
-                <div className="badge badge-secondary">Ours</div>
-              ) : null} 
-            </h2>
+            {cancelled ? (
+              <div className="badge bg-orange-400 text-white font-bold">
+                Cancelled
+              </div>
+            ) : null}
+            {account?.address === job.recipient ? (
+              <div className="badge badge-secondary">Ours</div>
+            ) : null}
+             {job.executer !== zeroAddress ? (
+              <div className="badge bg-orange-400 text-white font-bold">
+                Finished
+              </div>
+            ) : null}
+            <h2 className="card-title">{metadata?.description}</h2>
             <div className="card-actions">
               <div>
                 <div>Pays</div>
@@ -146,11 +169,8 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
                 <div className="badge badge-outline">{job.recruiterFee}</div>
               </div>
               <div className="flex gap-2 mt-2">
-                <ClaimButton
-                  tokenID={tokenID}
-                  claimedBy={claimData ? String(claimData) : zeroAddress}
-                />
-                <BurnButton tokenID={tokenID} recipient={job.recipient} />
+                <ClaimButton job={job} />
+                <CancelButton job={job} />
               </div>
             </div>
           </div>
