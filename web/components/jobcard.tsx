@@ -4,10 +4,11 @@ import { contract_address } from "../utils/consts";
 import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import ClaimButton from "./claimbutton";
 import CancelButton from "./cancelbutton";
+import FinishButton from "./finishbutton";
 import { useAppContext } from "../context/appContext";
 import { formatEther } from "ethers/lib/utils";
 
-let zeroAddress = "0x0000000000000000000000000000000000000000";
+export const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 export type Job = {
   tokenID: string;
@@ -20,7 +21,7 @@ export type Job = {
   claimer: string;
   recruiter: string;
   canceller: string;
-  executer: string; 
+  executer: string;
 };
 
 const JobCard = ({ tokenID }: { tokenID: string }) => {
@@ -29,6 +30,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
   let [metadata, setMetadata] = useState<any>(null);
   let [loading, setLoading] = useState(false);
   let [cancelled, setCancelled] = useState(false);
+  let [finished, setFinished] = useState(false);
 
   const { data: account } = useAccount();
 
@@ -43,7 +45,7 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
     claimer: "",
     recruiter: "",
     canceller: "",
-    executer: "", 
+    executer: "",
   });
 
   const { data: jobData } = useContractRead(
@@ -116,19 +118,22 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
         claimer: jobStatusData[0],
         canceller: jobStatusData[1],
         recruiter: jobStatusData[2],
-        executer: jobStatusData[3], 
+        executer: jobStatusData[3],
       });
       if (jobStatusData[1] !== zeroAddress) {
         //job has been cancelled by nonzeroaddress
         setCancelled(true);
+      }
+      if (jobStatusData[3] !== zeroAddress) {
+        setFinished(true);
       }
     }
   }, [jobStatusData]);
 
   return (
     <li
-      className={`${
-        cancelled ? "border-8 border-orange-400" : ""
+      className={`${cancelled ? "border-8 border-orange-400" : ""} ${
+        finished ? "border-8 border-green-400" : ""
       } card col-span-1 flex flex-col rounded-lg shadow-xl bg-base-200 `}
     >
       {metadata && job ? (
@@ -145,8 +150,8 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
             {account?.address === job.recipient ? (
               <div className="badge badge-secondary">Ours</div>
             ) : null}
-             {job.executer !== zeroAddress ? (
-              <div className="badge bg-orange-400 text-white font-bold">
+            {job.executer !== zeroAddress ? (
+              <div className="badge bg-green-400 text-white font-bold">
                 Finished
               </div>
             ) : null}
@@ -171,6 +176,9 @@ const JobCard = ({ tokenID }: { tokenID: string }) => {
               <div className="flex gap-2 mt-2">
                 <ClaimButton job={job} />
                 <CancelButton job={job} />
+              </div>
+              <div>
+                <FinishButton job={job} />
               </div>
             </div>
           </div>

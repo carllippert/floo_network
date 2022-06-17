@@ -80,7 +80,7 @@ contract NFT is ERC721, Ownable {
     //cancelled jobs
     mapping(uint256 => address) private _jobsCanceller;
 
-    //complated jobs
+    //completed jobs
     mapping(uint256 => address) private _jobsExecuter;
 
     //claimable balances

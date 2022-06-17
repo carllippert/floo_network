@@ -42,11 +42,10 @@ const Jobs: NextPage = () => {
 
   return (
     <Layout>
-      {/* {jobsCount} */}
       {data ? (
         <ul
           role="list"
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 mt-6"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 my-6"
         >
           {fakeJobs.map((job, index) => {
             return <JobCard key={job.tokenID} tokenID={job.tokenID} />;
