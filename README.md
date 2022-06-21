@@ -44,26 +44,33 @@ https://twitter.com/carllippert
 
 ---
 
-#### Related Reading:
+### Related Reading:
 
+#### The Day in the Life of a Crypto-Fueld Future - Greg Isenberg
 https://latecheckout.substack.com/p/a-day-in-the-life-of-a-crypto-fueled?s=r
 
+#### Positive Sum Worlds - OtherInter
 https://otherinter.net/research/positive-sum-worlds/
 
+#### A New Genre of Work - Station Network
 https://station.mirror.xyz/NDGEJB_SUCUVr9ixDwby4D0p_hhwVK3IF0jlixI9B1w
 
+#### The Internet of Jobs is Here - Owocki
 https://gov.gitcoin.co/t/the-internet-of-jobs-is-here/9340
 
-https://newsletter.banklesshq.com/p/the-internet-of-jobs-is-coming?s=r
-
+#### The TalentDAO Manifesto 
 https://mirror.xyz/reneedaos.eth/0N5qpv-lUFHpcddgTF9N0rKu0DSZ27kJq7MFC_u1RiQ
 
+#### Hyperstructures - jacob.eth ( ZORA founder )
 https://jacob.energy/hyperstructures.html
 
+#### The Future of Work in web3 - Layer3
 https://shift.beehiiv.com/p/layer3-future-work-web3
 
+#### Unbundling Venture Capital via DAO's - pet3rpan ( MetaCartel )
 https://medium.com/1kxnetwork/unbundling-the-unit-economics-of-venture-capital-via-daos-9fbda3e8113b
 
+#### A Novel Framework for Reputation-Based Systems - a16z
 https://future.a16z.com/reputation-based-systems
 
 ## Expected Roadmap Goals
