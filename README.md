@@ -13,7 +13,7 @@
 2. For systems that find the best humans ( and systems ) to complete tasks
 3. For humans ( and systems ) to complete work
 
-Simply its a s stakeholders to have an economic reason to participate and new business models that promote freedom.
+Simply speaking it creates an open, free, indexible database of all human work to create huge new opportunities for humanity to live more human lives. 
 
 ## Examples: 👇
 
