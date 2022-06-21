@@ -77,7 +77,7 @@ Demo Stack:
 forge init contracts --no-git --vscode
 may need to fuck with remappings.txt
 
-## How to start
+## How to start ( Actually this is currently blocked by some bugs between foundry and local graph )
 
 1. Start Local Blockchain @ /contracts
    anvil --host 0.0.0.0
