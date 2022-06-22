@@ -16,7 +16,7 @@
 
 Simply speaking it creates an open, free, indexible database of all human work to create huge new opportunities for humanity to live more human lives.
 
-## Examples: 👇
+## Example Use Cases: 👇
 
 #### Salesforse <-> NFT <-> Airtable
 
