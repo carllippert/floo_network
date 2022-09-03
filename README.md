@@ -1,4 +1,4 @@
-## _Productivity_ is a low level building block for human centric crypto systems
+## The Floo Network is the base building block for the future of composable work. 
 
 ### WTF does that mean?
 
@@ -6,7 +6,7 @@
 
 #### If your a defi person think of it as a global liquidity pool for work
 
-#### It is a smart contract, a flexible metadata standard, and 3 economic incentives
+#### It is a smart contract, a metadata standard, and 3 economic incentives
 
 #### Incentives:
 
