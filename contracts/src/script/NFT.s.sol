@@ -8,7 +8,7 @@ contract MyScript is Script {
     function run() external {
         vm.startBroadcast();
 
-        NFT nft = new NFT("NFT_tutorial", "TUT", "baseUri");
+        NFT nft = new NFT("The Floo Network", "FLOO");
 
         vm.stopBroadcast();
     }

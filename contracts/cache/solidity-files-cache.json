@@ -12,7 +12,7 @@
   },
   "files": {
     "lib/forge-std/src/Script.sol": {
-      "lastModificationDate": 1654211976572,
+      "lastModificationDate": 1662223822735,
       "contentHash": "3acd67e1ab7b1ccf0a734f0c64d40f99",
       "sourceName": "lib/forge-std/src/Script.sol",
       "solcConfig": {
@@ -54,7 +54,7 @@
       }
     },
     "lib/forge-std/src/Test.sol": {
-      "lastModificationDate": 1654211976572,
+      "lastModificationDate": 1662223822735,
       "contentHash": "13aee49ec8a282357c1c77015077c401",
       "sourceName": "lib/forge-std/src/Test.sol",
       "solcConfig": {
@@ -107,7 +107,7 @@
       }
     },
     "lib/forge-std/src/Vm.sol": {
-      "lastModificationDate": 1654211976572,
+      "lastModificationDate": 1662223822735,
       "contentHash": "a86a0ba62f0e0d55ead679a4a83e66f8",
       "sourceName": "lib/forge-std/src/Vm.sol",
       "solcConfig": {
@@ -145,7 +145,7 @@
       }
     },
     "lib/forge-std/src/console.sol": {
-      "lastModificationDate": 1654211976572,
+      "lastModificationDate": 1662223822735,
       "contentHash": "100b8a33b917da1147740d7ab8b0ded3",
       "sourceName": "lib/forge-std/src/console.sol",
       "solcConfig": {
@@ -183,7 +183,7 @@
       }
     },
     "lib/forge-std/src/console2.sol": {
-      "lastModificationDate": 1654211976573,
+      "lastModificationDate": 1662223822735,
       "contentHash": "5df91f8e93efbfcccf68973dc1b74a70",
       "sourceName": "lib/forge-std/src/console2.sol",
       "solcConfig": {
@@ -221,7 +221,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
-      "lastModificationDate": 1654461169663,
+      "lastModificationDate": 1663062318604,
       "contentHash": "8398972af73b4e9e5ff3b31cad86234f",
       "sourceName": "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
       "solcConfig": {
@@ -261,7 +261,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/Context.sol": {
-      "lastModificationDate": 1654461169686,
+      "lastModificationDate": 1663062318630,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/Context.sol",
       "solcConfig": {
@@ -299,7 +299,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1654461169687,
+      "lastModificationDate": 1663062318631,
       "contentHash": "9ba0bb93454a1ab7b6824f59ead41f42",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -337,7 +337,7 @@
       }
     },
     "lib/solmate/lib/ds-test/src/test.sol": {
-      "lastModificationDate": 1654212138330,
+      "lastModificationDate": 1663062320080,
       "contentHash": "962996f0e05d5218857a538a62d7c47e",
       "sourceName": "lib/solmate/lib/ds-test/src/test.sol",
       "solcConfig": {
@@ -375,7 +375,7 @@
       }
     },
     "lib/solmate/src/tokens/ERC721.sol": {
-      "lastModificationDate": 1654212136758,
+      "lastModificationDate": 1663062318830,
       "contentHash": "224006de5bf59fbbf155dcaac8c3a955",
       "sourceName": "lib/solmate/src/tokens/ERC721.sol",
       "solcConfig": {
@@ -416,7 +416,7 @@
       }
     },
     "src/NFT.sol": {
-      "lastModificationDate": 1658780895296,
+      "lastModificationDate": 1662223822785,
       "contentHash": "32488dc2afad55e00cdb3d8a3da52346",
       "sourceName": "src/NFT.sol",
       "solcConfig": {
@@ -458,8 +458,56 @@
         }
       }
     },
+    "src/script/NFT.s.sol": {
+      "lastModificationDate": 1663062418959,
+      "contentHash": "1a8fdb355b1ea4ba66e486d4d7159734",
+      "sourceName": "src/script/NFT.s.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/forge-std/src/Script.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
+        "lib/solmate/src/tokens/ERC721.sol",
+        "src/NFT.sol"
+      ],
+      "versionRequirement": "^0.8.10",
+      "artifacts": {
+        "MyScript": {
+          "0.8.10+commit.fc410830.Darwin.appleclang": "NFT.s.sol/MyScript.json"
+        }
+      }
+    },
     "src/test/NFT.t.sol": {
-      "lastModificationDate": 1654896578385,
+      "lastModificationDate": 1662223822785,
       "contentHash": "cd058662fef2781b6094a1adb59dc253",
       "sourceName": "src/test/NFT.t.sol",
       "solcConfig": {
