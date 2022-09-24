@@ -375,8 +375,8 @@
       }
     },
     "lib/solmate/src/tokens/ERC721.sol": {
-      "lastModificationDate": 1663062318830,
-      "contentHash": "224006de5bf59fbbf155dcaac8c3a955",
+      "lastModificationDate": 1664056542076,
+      "contentHash": "9d1f36d698e2772e66301a93ebd67e50",
       "sourceName": "lib/solmate/src/tokens/ERC721.sol",
       "solcConfig": {
         "settings": {
@@ -416,7 +416,7 @@
       }
     },
     "src/Floo.sol": {
-      "lastModificationDate": 1664050745022,
+      "lastModificationDate": 1664055651729,
       "contentHash": "9864122682b3cb25c5c3c5289140cbb2",
       "sourceName": "src/Floo.sol",
       "solcConfig": {
@@ -455,6 +455,49 @@
       "artifacts": {
         "Floo": {
           "0.8.10+commit.fc410830.Darwin.appleclang": "Floo.sol/Floo.json"
+        }
+      }
+    },
+    "src/Floo2.sol": {
+      "lastModificationDate": 1664057197811,
+      "contentHash": "e64574147985901fe93941c096068b64",
+      "sourceName": "src/Floo2.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
+        "lib/solmate/src/tokens/ERC721.sol"
+      ],
+      "versionRequirement": ">=0.8.10",
+      "artifacts": {
+        "Floo2": {
+          "0.8.10+commit.fc410830.Darwin.appleclang": "Floo2.sol/Floo2.json"
         }
       }
     },
