@@ -5,7 +5,6 @@ import MLS_NFT_CONTRACT from "../../contracts/out/NFT.sol/NFT.json";
 import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 
-
 type FormInput = {
   metadata: string;
   executer: string;
@@ -65,6 +64,7 @@ const MintForm = () => {
         if (signer && account) {
           console.log("Minting");
           let deadline = blockNumber.data + 100;
+          console.log("deadline" + deadline);
 
           let ethExec = parseUnits(form.executer);
           let ethCreator = parseUnits(form.creator);

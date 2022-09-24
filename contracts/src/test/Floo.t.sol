@@ -4,67 +4,67 @@ pragma solidity 0.8.10;
 import "ds-test/test.sol";
 import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
-import "../NFT.sol";
+import "../Floo.sol";
 
-contract NFTTest is DSTest {
+contract FlooTest is DSTest {
     using stdStorage for StdStorage;
 
     Vm private vm = Vm(HEVM_ADDRESS);
-    NFT private nft;
+    Floo private floo;
     StdStorage private stdstore;
 
     function setUp() public {
-        // Deploy NFT contract
-        nft = new NFT("MLS", "Loop");
+        // Deploy floo contract
+        floo = new Floo("MLS", "Loop");
     }
 
     function testMintPricePaid() public {
-        nft.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
     }
 
     function testFailMintToZeroAddress() public {
-        nft.mintTo(address(0), address(0), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(0), "https://example.com/token/1", 0, 0, 0, 0);
     }
 
     function testNewMintOwnerRegistered() public {
-        nft.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
         uint256 slotOfNewOwner = stdstore
-            .target(address(nft))
-            .sig(nft.ownerOf.selector)
+            .target(address(floo))
+            .sig(floo.ownerOf.selector)
             .with_key(1)
             .find();
 
         uint160 ownerOfTokenIdOne = uint160(
             uint256(
-                (vm.load(address(nft), bytes32(abi.encode(slotOfNewOwner))))
+                (vm.load(address(floo), bytes32(abi.encode(slotOfNewOwner))))
             )
         );
         assertEq(address(ownerOfTokenIdOne), address(1));
     }
 
     function testBalanceIncremented() public {
-        nft.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
         uint256 slotBalance = stdstore
-            .target(address(nft))
-            .sig(nft.balanceOf.selector)
+            .target(address(floo))
+            .sig(floo.balanceOf.selector)
             .with_key(address(1))
             .find();
 
         uint256 balanceFirstMint = uint256(
-            vm.load(address(nft), bytes32(slotBalance))
+            vm.load(address(floo), bytes32(slotBalance))
         );
         assertEq(balanceFirstMint, 1);
 
-        nft.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
         uint256 balanceSecondMint = uint256(
-            vm.load(address(nft), bytes32(slotBalance))
+            vm.load(address(floo), bytes32(slotBalance))
         );
         assertEq(balanceSecondMint, 2);
     }
 
     function testSafeContractReceiver() public {
         Receiver receiver = new Receiver();
-        nft.mintTo(
+        floo.mintTo(
             address(0),
             address(receiver),
             "https://example.com/token/1",
@@ -74,18 +74,18 @@ contract NFTTest is DSTest {
             0
         );
         uint256 slotBalance = stdstore
-            .target(address(nft))
-            .sig(nft.balanceOf.selector)
+            .target(address(floo))
+            .sig(floo.balanceOf.selector)
             .with_key(address(receiver))
             .find();
 
-        uint256 balance = uint256(vm.load(address(nft), bytes32(slotBalance)));
+        uint256 balance = uint256(vm.load(address(floo), bytes32(slotBalance)));
         assertEq(balance, 1);
     }
 
     function testFailUnSafeContractReceiver() public {
         vm.etch(address(1), bytes("mock code"));
-        nft.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
+        floo.mintTo(address(0), address(1), "https://example.com/token/1", 0, 0, 0, 0);
     }
 }
 

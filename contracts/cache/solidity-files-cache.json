@@ -415,10 +415,10 @@
         }
       }
     },
-    "src/NFT.sol": {
-      "lastModificationDate": 1662223822785,
-      "contentHash": "32488dc2afad55e00cdb3d8a3da52346",
-      "sourceName": "src/NFT.sol",
+    "src/Floo.sol": {
+      "lastModificationDate": 1664050745022,
+      "contentHash": "9864122682b3cb25c5c3c5289140cbb2",
+      "sourceName": "src/Floo.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -453,15 +453,15 @@
       ],
       "versionRequirement": ">=0.8.10",
       "artifacts": {
-        "NFT": {
-          "0.8.10+commit.fc410830.Darwin.appleclang": "NFT.sol/NFT.json"
+        "Floo": {
+          "0.8.10+commit.fc410830.Darwin.appleclang": "Floo.sol/Floo.json"
         }
       }
     },
-    "src/script/NFT.s.sol": {
-      "lastModificationDate": 1663062418959,
-      "contentHash": "1a8fdb355b1ea4ba66e486d4d7159734",
-      "sourceName": "src/script/NFT.s.sol",
+    "src/script/Floo.s.sol": {
+      "lastModificationDate": 1664050842321,
+      "contentHash": "2f8e2ebbc551163e9cc8befe541d55e3",
+      "sourceName": "src/script/Floo.s.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -497,19 +497,19 @@
         "lib/openzeppelin-contracts/contracts/utils/Context.sol",
         "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
         "lib/solmate/src/tokens/ERC721.sol",
-        "src/NFT.sol"
+        "src/Floo.sol"
       ],
       "versionRequirement": "^0.8.10",
       "artifacts": {
         "MyScript": {
-          "0.8.10+commit.fc410830.Darwin.appleclang": "NFT.s.sol/MyScript.json"
+          "0.8.10+commit.fc410830.Darwin.appleclang": "Floo.s.sol/MyScript.json"
         }
       }
     },
-    "src/test/NFT.t.sol": {
-      "lastModificationDate": 1662223822785,
-      "contentHash": "cd058662fef2781b6094a1adb59dc253",
-      "sourceName": "src/test/NFT.t.sol",
+    "src/test/Floo.t.sol": {
+      "lastModificationDate": 1664050958970,
+      "contentHash": "b251eb34438506cc00f46a03513b2203",
+      "sourceName": "src/test/Floo.t.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -547,15 +547,15 @@
         "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
         "lib/solmate/lib/ds-test/src/test.sol",
         "lib/solmate/src/tokens/ERC721.sol",
-        "src/NFT.sol"
+        "src/Floo.sol"
       ],
       "versionRequirement": "=0.8.10",
       "artifacts": {
-        "NFTTest": {
-          "0.8.10+commit.fc410830.Darwin.appleclang": "NFT.t.sol/NFTTest.json"
+        "FlooTest": {
+          "0.8.10+commit.fc410830.Darwin.appleclang": "Floo.t.sol/FlooTest.json"
         },
         "Receiver": {
-          "0.8.10+commit.fc410830.Darwin.appleclang": "NFT.t.sol/Receiver.json"
+          "0.8.10+commit.fc410830.Darwin.appleclang": "Floo.t.sol/Receiver.json"
         }
       }
     }

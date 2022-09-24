@@ -2,13 +2,13 @@
 pragma solidity ^0.8.10;
 
 import "forge-std/Script.sol";
-import "../NFT.sol";
+import "../Floo.sol";
 
 contract MyScript is Script {
     function run() external {
         vm.startBroadcast();
 
-        NFT nft = new NFT("The Floo Network", "FLOO");
+        Floo floo = new Floo("The Floo Network", "FLOO");
 
         vm.stopBroadcast();
     }

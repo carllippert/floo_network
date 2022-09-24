@@ -5,12 +5,10 @@ import "solmate/tokens/ERC721.sol";
 import "openzeppelin-contracts/contracts/utils/Strings.sol";
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 
-error MintPriceNotPaid();
-error MaxSupply();
 error NonExistentTokenURI();
 error WithdrawTransfer();
 
-contract NFT is ERC721, Ownable {
+contract Floo is ERC721, Ownable {
     using Strings for uint256;
     uint256 public currentTokenId;
 
