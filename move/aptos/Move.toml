@@ -3,7 +3,9 @@ name = 'FLOO'
 version = '1.0.0'
 upgrade_policy = "compatible"
 
-[dependencies.AptosFramework]
-git = 'https://github.com/aptos-labs/aptos-core.git'
-rev = 'main'
-subdir = 'aptos-move/framework/aptos-framework'
+[dependencies]
+AptosFramework = {git = 'https://github.com/aptos-labs/aptos-core.git', rev = 'main', subdir = 'aptos-move/framework/aptos-framework'}
+AptosToken = {git = 'https://github.com/aptos-labs/aptos-core.git', rev = 'main', subdir = 'aptos-move/framework/aptos-token'}
+
+[addresses]
+admin = "0x123"
