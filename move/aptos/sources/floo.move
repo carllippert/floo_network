@@ -1,4 +1,4 @@
-module FLOO::nft {
+module FLOO {
     //inspiration
     //https://github.com/coming-chat/aptos-cid/blob/main/sources/cid.move
 
@@ -19,7 +19,9 @@ module FLOO::nft {
     /// The caller is not authorized to perform this operation
     const ENOT_AUTHORIZED: u64 = 0;
 
-      /// Call by @admin who is owner only
+    const FEE: u64 = 0; 
+
+    /// Call by @admin who is owner only
     public entry fun initialize(owner: &signer) {
         use aptos_framework::aptos_account;
 
@@ -32,7 +34,36 @@ module FLOO::nft {
         // token_helper::initialize(owner);
         // https://github.com/coming-chat/aptos-cid/blob/main/sources/token_helper.move
 
-        
+    }
+    
+    public entry fun createTask( 
+        user: &signer,
+         //address spending funds to create task
+        employer: address,
+         //app that mints on behalf     of user
+        creator: address, 
+        //bounty paid to app that creates on behalf of user
+        creatorBounty: u64,
+        //bounty paid on completion of task to task completer
+        contractorBounty: u64, 
+        //bounty paid to address that finds user to complete task
+        recruiterBounty: u64,  
+        //self explanatory 
+        deadline: u64,
+        //public metadata image?
+        tokenURI: String, 
+        //allow arbitrary properties
+        property_keys: vector<String>,
+        property_values: vector<vector<u8>>,
+        property_types: vector<String>,
+        whitelist: std::vector<address> 
+        ) {
+
+            //transfer coins into this account for escrow
+            let price = creatorBounty + contractorBounty + recruiterBounty + FEE; 
+            coin::transfer<AptosCoin>(user, this, price); 
 
     }
+
+
 }
