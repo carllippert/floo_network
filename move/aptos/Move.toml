@@ -9,3 +9,4 @@ AptosToken = {git = 'https://github.com/aptos-labs/aptos-core.git', rev = 'main'
 
 [addresses]
 admin = "0x123"
+escrow = "0x1234"

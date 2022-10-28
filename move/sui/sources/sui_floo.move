@@ -7,23 +7,28 @@ module FLOO {
     use std::signer;
     use std::string::String;
 
-    use aptos_framework::account;
-    use aptos_framework::aptos_coin::AptosCoin;
-    use aptos_framework::coin;
-    use aptos_framework::timestamp;
-    use aptos_framework::event;
-    use aptos_std::table::{Self, Table};
-    use aptos_token::property_map;
-    use aptos_token::token::{Self, TokenId};
+    // use aptos_framework::account;
+    // use aptos_framework::aptos_coin::AptosCoin;
+    // use aptos_framework::coin;
+    // use aptos_framework::timestamp;
+    // use aptos_framework::event;
+    // use aptos_std::table::{Self, Table};
+    // use aptos_token::property_map;
+    // use aptos_token::token::{Self, TokenId};
 
     /// The caller is not authorized to perform this operation
     const ENOT_AUTHORIZED: u64 = 0;
 
     const FEE: u64 = 0; 
 
+     struct Escrow<T: key + store> has key {
+        recipient: address,
+        obj: T
+    }
+
     /// Call by @admin who is owner only
     public entry fun initialize(owner: &signer) {
-        use aptos_framework::aptos_account;
+        // use aptos_framework::aptos_account;
 
         assert!(signer::address_of(owner) == @admin, error::permission_denied(ENOT_AUTHORIZED));
 
@@ -32,7 +37,7 @@ module FLOO {
         };
 
         // token_helper::initialize(owner);
-        // https://github.com/coming-chat/aptos-cid/blob/main/sources/token_helper.move
+        // https://github.com/coming-chat/aptos-cid/blob /main/sources/token_helper.move
 
     }
     
@@ -56,12 +61,18 @@ module FLOO {
         property_keys: vector<String>,
         property_values: vector<vector<u8>>,
         property_types: vector<String>,
-        whitelist: std::vector<address> 
+        whitelist: vector<address> 
         ) {
-
             //transfer coins into this account for escrow
             let price = creatorBounty + contractorBounty + recruiterBounty + FEE; 
-            coin::transfer<AptosCoin>(user, this, price); 
+            coin::transfer<AptosCoin>(user, @escrow, price); 
+            
+            let escrow = Escrow<T> {
+            recipient,
+            obj: obj_in
+        }
+
+        transfer::transfer(escrow, sender);
 
     }
 
